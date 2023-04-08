@@ -12,7 +12,7 @@ public class MessageVO {
     private boolean editable;
     private boolean deletable;
     private Participant participant;
-    private Thread thread;
+    private java.lang.Thread thread;
     private Long time;
     private Integer timeNanos;
     private Boolean delivered;
@@ -95,11 +95,11 @@ public class MessageVO {
         this.participant = participant;
     }
 
-    public Thread getThread() {
+    public java.lang.Thread getThread() {
         return thread;
     }
 
-    public void setThread(Thread thread) {
+    public void setThread(java.lang.Thread thread) {
         this.thread = thread;
     }
 

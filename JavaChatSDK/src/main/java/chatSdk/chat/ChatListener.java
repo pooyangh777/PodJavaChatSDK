@@ -4,7 +4,6 @@ package chatSdk.chat;
 import chatSdk.asyncSdk.model.*;
 import chatSdk.asyncSdk.util.ChatState;
 import chatSdk.mainmodel.ResultDeleteMessage;
-import asyncSdk.model.*;
 
 public interface ChatListener {
 

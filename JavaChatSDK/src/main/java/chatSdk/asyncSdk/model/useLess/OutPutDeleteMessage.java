@@ -1,8 +1,8 @@
 package chatSdk.asyncSdk.model.useLess;
 
 
-import chatSdk.mainmodel.ResultDeleteMessage;
 import chatSdk.asyncSdk.model.BaseOutPut;
+import chatSdk.mainmodel.ResultDeleteMessage;
 
 public class OutPutDeleteMessage extends BaseOutPut {
     private ResultDeleteMessage result ;

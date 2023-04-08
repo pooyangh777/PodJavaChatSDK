@@ -1,15 +1,15 @@
 package chatSdk.chat;
+
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
-import chatSdk.chat.requestobject.*;
-import asyncSdk.model.AsyncMessageType;
-import asyncSdk.model.AsyncState;
 import chatSdk.asyncSdk.model.*;
 import chatSdk.asyncSdk.model.Error;
+import chatSdk.asyncSdk.model.MapLocation;
 import chatSdk.asyncSdk.util.*;
-import chatSdk.chat.requestobject.*;
+import asyncSdk.model.AsyncMessageType;
+import asyncSdk.model.AsyncState;
 import chatSdk.mainmodel.*;
-import chatSdk.mainmodel.Thread;
+import chatSdk.requestobject.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,15 +18,13 @@ import com.google.gson.reflect.TypeToken;
 import chatSdk.asyncSdk.exception.ConnectionException;
 import chatSdk.localModel.LFileUpload;
 import chatSdk.localModel.SetRuleVO;
-import chatSdk.mainmodel.*;
-import asyncSdk.model.*;
-import chatSdk.asyncSdk.model.MapLocation;
 import chatSdk.networking.api.ContactApi;
 import chatSdk.networking.api.FileApi;
 import chatSdk.networking.retrofithelper.ApiListener;
 import chatSdk.networking.retrofithelper.RetrofitHelperFileServer;
 import chatSdk.networking.retrofithelper.RetrofitHelperPlatformHost;
 import chatSdk.networking.retrofithelper.RetrofitUtil;
+import chatSdk.mainmodel.Thread;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -34,9 +32,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
+import chatSdk.requestobject.*;
 import retrofit2.Call;
 import retrofit2.Response;
-import chatSdk.asyncSdk.util.*;
 import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,10 +42,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import chatSdk.asyncSdk.util.ChatState;
-import chatSdk.asyncSdk.util.ChatState;
 
 import static asyncSdk.model.AsyncMessageType.Message;
+
 /**
  * Created By Khojasteh on 7/29/2019
  */
@@ -2723,7 +2720,7 @@ public class Chat implements AsyncListener {
      */
     public String addAuditor(RequestSetAuditor requestSetAuditor) {
         SetRuleVO setRuleVO = new SetRuleVO();
-        BeanUtils.copyProperties(requestSetAuditor, setRuleVO);
+//        BeanUtils.copyProperties(requestSetAuditor, setRuleVO);
         setRuleVO.setTypeCode(config.getTypeCode());
 
         return setRole(setRuleVO);
@@ -2734,7 +2731,7 @@ public class Chat implements AsyncListener {
      */
     public String addAdmin(RequestSetAdmin requestSetAdmin) {
         SetRuleVO setRuleVO = new SetRuleVO();
-        BeanUtils.copyProperties(requestSetAdmin, setRuleVO);
+//        BeanUtils.copyProperties(requestSetAdmin, setRuleVO);
         setRuleVO.setTypeCode(config.getTypeCode());
 
         return setRole(setRuleVO);
