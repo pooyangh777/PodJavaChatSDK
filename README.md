@@ -19,17 +19,37 @@ Fanap's POD Chat Service - JAVA SDK
 @Builder
 @Getter
 @Setter
-public class ChatConfig {
-    private AsyncConfig asyncConfig;
-    private String severName;
+AsyncConfig {
+    private boolean isSocketProvider;
     private String token;
+    private String serverName;
     private String ssoHost;
-    private String platformHost;
-    private String fileServer;
-    private Long chatId;
-    private String typeCode = "default";
-    private long ttl;
-    private boolean isLoggable = false;
+    private String queueServer;
+    private String queuePort;
+    private String queueInput;
+    private String queueOutput;
+    private String queueUserName;
+    private String queuePassword;
+    private int queueReconnectTime;
+    private String socketAddress;
+    private boolean isLoggable;
+    private String appId;
+
+
+@Builder
+@Getter
+@Setter
+ChatConfig {
+    AsyncConfig asyncConfig;
+    String severName;
+    String token;
+    String ssoHost;
+    String platformHost;
+    String fileServer;
+    Long chatId;
+    String typeCode = "default";
+    long ttl;
+    boolean isLoggable = false;
 }
 
   public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
