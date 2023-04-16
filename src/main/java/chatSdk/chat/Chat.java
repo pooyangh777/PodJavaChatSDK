@@ -2,6 +2,7 @@ package chatSdk.chat;
 
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
+import asyncSdk.model.AsyncMessage;
 import chatSdk.asyncSdk.model.*;
 import chatSdk.asyncSdk.model.Error;
 import chatSdk.asyncSdk.model.MapLocation;
@@ -35,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import chatSdk.requestobject.*;
 import retrofit2.Call;
 import retrofit2.Response;
+
 import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -69,20 +71,21 @@ public class Chat implements AsyncListener {
     private Chat(ChatConfig chatConfig, ChatListener listener) {
         this.config = chatConfig;
         this.listener = listener;
+        async = new Async(chatConfig.getAsyncConfig());
+        instance = new Chat(chatConfig, listener);
     }
 
     /**
      * Initialize the Chat
      **/
-    public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
-        if (instance == null) {
-            async = Async.getInstance(chatConfig.getAsyncConfig());
-            instance = new Chat(chatConfig, listener);
-            gson = new Gson();
-        }
-        return instance;
-    }
-
+//    public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
+//        if (instance == null) {
+//            async = new Async(chatConfig.getAsyncConfig());
+//            instance = new Chat(chatConfig, listener);
+//            gson = new Gson();
+//        }
+//        return instance;
+//    }
     private static synchronized String generateUniqueId() {
         return UUID.randomUUID().toString();
     }
@@ -94,10 +97,10 @@ public class Chat implements AsyncListener {
      */
 
     @Override
-    public void onReceivedMessage(String textMessage) {
+    public void onReceivedMessage(String message) {
         int messageType = 0;
 //        ChatMessage chatMessage = gson.fromJson(textMessage, ChatMessage.class);
-        ChatMessage chatMessage = gson.fromJson(textMessage, ChatMessage.class);
+        ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
         String messageUniqueId = chatMessage != null ? chatMessage.getUniqueId() : null;
         if (chatMessage != null) {
             messageType = chatMessage.getType();
