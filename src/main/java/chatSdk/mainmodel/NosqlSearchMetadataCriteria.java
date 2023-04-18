@@ -1,5 +1,7 @@
 package chatSdk.mainmodel;
 
+import chatSdk.chat.Chat;
+
 import java.util.List;
 
 public class NosqlSearchMetadataCriteria {
@@ -26,7 +28,6 @@ public class NosqlSearchMetadataCriteria {
         this.and = builderSearchMetadata.and;
         this.not = builderSearchMetadata.not;
         this.or = builderSearchMetadata.or;
-
     }
     public static class Builder {
         private final String field;

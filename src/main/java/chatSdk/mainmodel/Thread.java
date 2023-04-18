@@ -1,5 +1,8 @@
 package chatSdk.mainmodel;
 
+import chatSdk.dataTransferObject.message.inPut.MessageVO;
+import chatSdk.dataTransferObject.thread.inPut.Participant;
+
 import java.util.List;
 
 public class Thread {

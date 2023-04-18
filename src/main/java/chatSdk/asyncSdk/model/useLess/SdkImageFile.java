@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.FileImageMetaData;
+import chatSdk.dataTransferObject.file.inPut.FileImageMetaData;
 
 public class SdkImageFile {
 

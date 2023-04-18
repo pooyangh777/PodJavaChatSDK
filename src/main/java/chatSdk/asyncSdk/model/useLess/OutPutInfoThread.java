@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.ResultThread;
+import chatSdk.dataTransferObject.thread.inPut.ResultThread;
 
 public class OutPutInfoThread {
     private ResultThread result;

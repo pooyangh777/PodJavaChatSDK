@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.ResultAddContact;
+import chatSdk.dataTransferObject.contacts.inPut.ResultAddContact;
 
 import java.util.List;
 

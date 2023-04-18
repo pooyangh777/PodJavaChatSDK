@@ -1,7 +1,7 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.BaseOutPut;
-import chatSdk.asyncSdk.model.ResultContact;
+import chatSdk.dataTransferObject.BaseOutPut;
+import chatSdk.dataTransferObject.contacts.inPut.ResultContact;
 
 public class OutPutContact extends BaseOutPut {
 

@@ -1,7 +1,7 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.BaseOutPut;
-import chatSdk.asyncSdk.model.ResultUserInfo;
+import chatSdk.dataTransferObject.BaseOutPut;
+import chatSdk.dataTransferObject.user.inPut.ResultUserInfo;
 
 public class OutPutUserInfo extends BaseOutPut {
 

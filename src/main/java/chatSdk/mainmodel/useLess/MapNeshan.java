@@ -1,6 +1,6 @@
 package chatSdk.mainmodel.useLess;
 
-import chatSdk.mainmodel.MapItem;
+import chatSdk.dataTransferObject.map.inPut.MapItem;
 
 import java.util.List;
 

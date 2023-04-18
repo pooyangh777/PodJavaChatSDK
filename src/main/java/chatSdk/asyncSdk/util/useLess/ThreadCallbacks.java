@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.util.useLess;
 
-import chatSdk.asyncSdk.util.Callback;
+import chatSdk.dataTransferObject.chat.Callback;
 
 import java.util.ArrayList;
 

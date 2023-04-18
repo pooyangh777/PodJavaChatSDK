@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.BaseOutPut;
+import chatSdk.dataTransferObject.BaseOutPut;
 
 public class OutPutMute extends BaseOutPut {
 

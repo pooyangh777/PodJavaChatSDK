@@ -1,7 +1,7 @@
 package chatSdk.mainmodel;
 
 
-import chatSdk.asyncSdk.model.DeleteMessageContent;
+import chatSdk.dataTransferObject.message.inPut.DeleteMessageContent;
 
 public class ResultDeleteMessage {
     private DeleteMessageContent deletedMessage;

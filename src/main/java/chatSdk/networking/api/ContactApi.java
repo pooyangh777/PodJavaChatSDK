@@ -1,8 +1,8 @@
 package chatSdk.networking.api;
 
 
-import chatSdk.asyncSdk.model.ContactRemove;
-import chatSdk.asyncSdk.model.Contacts;
+import chatSdk.dataTransferObject.contacts.inPut.ContactRemove;
+import chatSdk.dataTransferObject.contacts.inPut.Contacts;
 import chatSdk.mainmodel.SearchContactVO;
 import chatSdk.mainmodel.UpdateContact;
 import retrofit2.Call;

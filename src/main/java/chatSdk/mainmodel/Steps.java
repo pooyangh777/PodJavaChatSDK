@@ -1,5 +1,7 @@
 package chatSdk.mainmodel;
 
+import chatSdk.dataTransferObject.map.inPut.Distance;
+
 import java.util.List;
 
 public class Steps {

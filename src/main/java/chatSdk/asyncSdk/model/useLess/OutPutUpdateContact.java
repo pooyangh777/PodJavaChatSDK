@@ -1,6 +1,6 @@
 package chatSdk.asyncSdk.model.useLess;
 
-import chatSdk.asyncSdk.model.ResultUpdateContact;
+import chatSdk.dataTransferObject.contacts.inPut.ResultUpdateContact;
 
 public class OutPutUpdateContact  {
     private Boolean hasError;

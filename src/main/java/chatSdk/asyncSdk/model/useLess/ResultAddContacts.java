@@ -1,7 +1,7 @@
 package chatSdk.asyncSdk.model.useLess;
 
 
-import chatSdk.mainmodel.Contact;
+import chatSdk.dataTransferObject.contacts.inPut.Contact;
 
 import java.util.ArrayList;
 

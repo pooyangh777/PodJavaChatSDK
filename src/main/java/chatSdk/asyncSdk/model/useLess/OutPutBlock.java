@@ -1,8 +1,8 @@
 package chatSdk.asyncSdk.model.useLess;
 
 
-import chatSdk.asyncSdk.model.BaseOutPut;
-import chatSdk.asyncSdk.model.ResultBlock;
+import chatSdk.dataTransferObject.BaseOutPut;
+import chatSdk.dataTransferObject.user.inPut.ResultBlock;
 
 public class OutPutBlock extends BaseOutPut {
     private String referenceNumber;

@@ -1,18 +1,29 @@
 package chatSdk.chat;
 
 
-import chatSdk.asyncSdk.model.*;
-import chatSdk.asyncSdk.util.ChatState;
+import chatSdk.dataTransferObject.chat.ChatState;
+import chatSdk.dataTransferObject.ChatResponse;
+import chatSdk.dataTransferObject.contacts.inPut.*;
+import chatSdk.dataTransferObject.file.inPut.ResultFile;
+import chatSdk.dataTransferObject.file.inPut.ResultImageFile;
+import chatSdk.dataTransferObject.map.inPut.ResultMapReverse;
+import chatSdk.dataTransferObject.map.outPut.OutPutMapNeshan;
+import chatSdk.dataTransferObject.message.inPut.ResultInteractMessage;
+import chatSdk.dataTransferObject.message.inPut.ResultMessage;
+import chatSdk.dataTransferObject.message.inPut.ResultNewMessage;
+import chatSdk.dataTransferObject.system.inPut.ResultSetRole;
+import chatSdk.dataTransferObject.system.outPut.ErrorOutPut;
+import chatSdk.dataTransferObject.thread.inPut.*;
+import chatSdk.dataTransferObject.thread.outPut.OutPutThread;
+import chatSdk.dataTransferObject.user.inPut.*;
 import chatSdk.mainmodel.ResultDeleteMessage;
 
-public interface
-ChatListener {
+public interface ChatListener {
 
     default void onError(String content, ErrorOutPut error) {
     }
 
-    default void onGetContacts(String content, ChatResponse<ResultContact> response) {
-    }
+
 
     default void onGetHistory(String content, ChatResponse<ResultHistory> history) {
     }

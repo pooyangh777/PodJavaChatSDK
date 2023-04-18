@@ -1,10 +1,10 @@
 package chatSdk.chat;
 
-import chatSdk.asyncSdk.model.ChatResponse;
-import chatSdk.asyncSdk.model.ErrorOutPut;
-import chatSdk.asyncSdk.model.ResultFile;
-import chatSdk.asyncSdk.model.ResultImageFile;
-import chatSdk.mainmodel.FileUpload;
+import chatSdk.dataTransferObject.ChatResponse;
+import chatSdk.dataTransferObject.system.outPut.ErrorOutPut;
+import chatSdk.dataTransferObject.file.inPut.ResultFile;
+import chatSdk.dataTransferObject.file.inPut.ResultImageFile;
+import chatSdk.dataTransferObject.file.inPut.FileUpload;
 
 //A callback for while file is being uploaded.
 public abstract class ProgressHandler {

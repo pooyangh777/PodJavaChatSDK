@@ -1,8 +1,8 @@
 package chatSdk.asyncSdk.model.useLess;
 
 
-import chatSdk.asyncSdk.model.BaseOutPut;
-import chatSdk.mainmodel.MapRout;
+import chatSdk.dataTransferObject.BaseOutPut;
+import chatSdk.dataTransferObject.map.inPut.MapRout;
 
 public class OutPutMapRout extends BaseOutPut {
 

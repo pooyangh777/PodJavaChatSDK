@@ -1,5 +1,7 @@
 package chatSdk.mainmodel;
 
+import chatSdk.dataTransferObject.contacts.inPut.Contact;
+
 import java.util.List;
 
 public class SearchContactVO {

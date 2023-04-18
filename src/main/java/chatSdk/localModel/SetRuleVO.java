@@ -1,6 +1,6 @@
 package chatSdk.localModel;
 
-import chatSdk.requestobject.RequestRole;
+import chatSdk.dataTransferObject.system.outPut.RequestRole;
 
 import java.util.ArrayList;
 

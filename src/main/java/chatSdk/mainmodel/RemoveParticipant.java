@@ -1,5 +1,8 @@
 package chatSdk.mainmodel;
 
+import chatSdk.chat.Chat;
+import chatSdk.dataTransferObject.thread.outPut.RequestThread;
+
 public class RemoveParticipant {
 
     private String content;

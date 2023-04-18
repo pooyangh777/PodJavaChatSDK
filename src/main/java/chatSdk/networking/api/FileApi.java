@@ -1,10 +1,10 @@
 package chatSdk.networking.api;
 
-import chatSdk.asyncSdk.model.FileImageUpload;
+import chatSdk.dataTransferObject.file.inPut.FileImageUpload;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import chatSdk.mainmodel.FileUpload;
+import chatSdk.dataTransferObject.file.inPut.FileUpload;
 import retrofit2.Call;
 import retrofit2.http.*;
 

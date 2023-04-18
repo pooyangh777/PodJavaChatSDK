@@ -3,20 +3,36 @@ package chatSdk.chat;
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
 import asyncSdk.model.AsyncMessage;
-import chatSdk.asyncSdk.model.*;
-import chatSdk.asyncSdk.model.Error;
-import chatSdk.asyncSdk.model.MapLocation;
-import chatSdk.asyncSdk.util.*;
+import chatSdk.dataTransferObject.chat.*;
+import chatSdk.dataTransferObject.contacts.inPut.Contact;
+import chatSdk.dataTransferObject.system.inPut.Error;
+import chatSdk.dataTransferObject.ChatResponse;
+import chatSdk.dataTransferObject.contacts.inPut.*;
+import chatSdk.dataTransferObject.map.inPut.MapLocation;
 import asyncSdk.model.AsyncMessageType;
 import asyncSdk.model.AsyncState;
+import chatSdk.dataTransferObject.file.inPut.*;
+import chatSdk.dataTransferObject.message.inPut.*;
+import chatSdk.dataTransferObject.message.outPut.RequestEditMessage;
+import chatSdk.dataTransferObject.contacts.outPut.*;
+import chatSdk.dataTransferObject.file.outPut.RequestFileMessage;
+import chatSdk.dataTransferObject.file.outPut.RequestReplyFileMessage;
+import chatSdk.dataTransferObject.file.outPut.RequestUploadFile;
+import chatSdk.dataTransferObject.file.outPut.RequestUploadImage;
+import chatSdk.dataTransferObject.message.outPut.*;
+import chatSdk.dataTransferObject.system.inPut.Admin;
+import chatSdk.dataTransferObject.system.inPut.ResultSetRole;
+import chatSdk.dataTransferObject.system.outPut.*;
+import chatSdk.dataTransferObject.thread.inPut.*;
+import chatSdk.dataTransferObject.thread.outPut.*;
+import chatSdk.dataTransferObject.user.inPut.*;
+import chatSdk.dataTransferObject.user.outPut.*;
 import chatSdk.mainmodel.*;
-import chatSdk.requestobject.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import chatSdk.asyncSdk.exception.ConnectionException;
 import chatSdk.localModel.LFileUpload;
 import chatSdk.localModel.SetRuleVO;
 import chatSdk.networking.api.ContactApi;
@@ -26,6 +42,7 @@ import chatSdk.networking.retrofithelper.RetrofitHelperFileServer;
 import chatSdk.networking.retrofithelper.RetrofitHelperPlatformHost;
 import chatSdk.networking.retrofithelper.RetrofitUtil;
 import chatSdk.mainmodel.Thread;
+import lombok.Getter;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -33,7 +50,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
-import chatSdk.requestobject.*;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -53,54 +69,54 @@ import static asyncSdk.model.AsyncMessageType.Message;
 public class Chat implements AsyncListener {
     private static final int TOKEN_ISSUER = 1;
 
-    private static Logger logger = LogManager.getLogger(Chat.class);
+    private static final Logger logger = LogManager.getLogger(Chat.class);
     private static Async async;
+    @Getter
     private static Chat instance;
-    private ChatListener listener;
+    private final ChatListener listener;
     private static Gson gson;
     private long userId;
     private ContactApi contactApi;
     private long lastSentMessageTime;
     private ChatState state;
-    private long retryStepUserInfo = 1;
     private int signalIntervalTime;
     private int expireAmount;
-    private boolean userInfoResponse = false;
     public ChatConfig config;
 
     private Chat(ChatConfig chatConfig, ChatListener listener) {
         this.config = chatConfig;
         this.listener = listener;
-        async = new Async(chatConfig.getAsyncConfig());
-        instance = new Chat(chatConfig, listener);
     }
 
     /**
      * Initialize the Chat
      **/
-//    public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
-//        if (instance == null) {
-//            async = new Async(chatConfig.getAsyncConfig());
-//            instance = new Chat(chatConfig, listener);
-//            gson = new Gson();
-//        }
-//        return instance;
-//    }
+
+    public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
+        if (instance == null) {
+            async = new Async(chatConfig.getAsyncConfig());
+            instance = new Chat(chatConfig, listener);
+            instance.contactApi = RetrofitHelperPlatformHost.getInstance(chatConfig.getPlatformHost()).create(ContactApi.class);
+            gson = new Gson();
+        }
+        return instance;
+    }
+
     private static synchronized String generateUniqueId() {
         return UUID.randomUUID().toString();
     }
 
     /**
-     * First we check the message type and then we set the
-     * the callback for it.
+     * First we check the message type then we set the
+     * callback for it.
      * Here its showed the raw log.
      */
 
     @Override
-    public void onReceivedMessage(String message) {
+    public void onReceivedMessage(AsyncMessage asyncMessage) {
         int messageType = 0;
 //        ChatMessage chatMessage = gson.fromJson(textMessage, ChatMessage.class);
-        ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
+        ChatMessage chatMessage = gson.fromJson(asyncMessage.getContent(), ChatMessage.class);
         String messageUniqueId = chatMessage != null ? chatMessage.getUniqueId() : null;
         if (chatMessage != null) {
             messageType = chatMessage.getType();
@@ -196,7 +212,7 @@ public class Chat implements AsyncListener {
     }
 
     @Override
-    public void onStateChanged(AsyncState state) {
+    public void onStateChanged(AsyncState state, Async async) {
         switch (state) {
             case AsyncReady:
                 this.state = ChatState.ChatReady;
@@ -216,16 +232,15 @@ public class Chat implements AsyncListener {
         listener.onChatState(this.state);
     }
 
-//    @Override
+    //    @Override
 //    public void onError(Exception asyncSdk.exception) {
 //
 //    }
 
-    public void connect() throws ConnectionException {
+    public void connect() throws Exception {
         try {
             async.setListener(this);
             setUserId(config.getChatId());
-            contactApi = RetrofitHelperPlatformHost.getInstance(config.getPlatformHost()).create(ContactApi.class);
             gson = new Gson();
             async.connect();
         } catch (Throwable throwable) {
@@ -236,10 +251,10 @@ public class Chat implements AsyncListener {
 
     /**
      * Send text message to the thread
-     * All of the messages first send to Message Queue(Cache) and then send to chat server
+     * All messages first send to Message Queue(Cache) and then send to chat server
      *
-     * @param textMessage        String that we want to sent to the thread
-     * @param threadId           Id of the destination thread
+     * @param textMessage        String that we want to send to the thread
+     * @param threadId           ID of the destination thread
      * @param jsonSystemMetadata It should be Json,if you don't have metaData you can set it to "null"
      */
     public String sendTextMessage(String textMessage, long threadId, Integer messageType, String jsonSystemMetadata, String typeCode) {
@@ -283,7 +298,7 @@ public class Chat implements AsyncListener {
             asyncContentWaitQueue = jsonObject.toString();
 
             if (state == ChatState.ChatReady) {
-                sendAsyncMessage(asyncContentWaitQueue, Message, "SEND_TEXT_MESSAGE");
+                sendAsyncMessage(asyncContentWaitQueue, "SEND_TEXT_MESSAGE");
 
             } else {
                 String jsonError = getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -303,8 +318,9 @@ public class Chat implements AsyncListener {
      *                       String textMessage {text of the message}
      *                       int messageType {type of the message}
      *                       String jsonMetaData {metadata of the message}
-     *                       long threadId {The id of a thread that its wanted to send  }
+     *                       long threadId {The id of a thread that It's wanted to send  }
      */
+
     public String sendTextMessage(RequestMessage requestMessage) {
         String textMessage = requestMessage.getTextMessage();
         long threadId = requestMessage.getThreadId();
@@ -316,7 +332,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Get the list of threads or you can just pass the thread id that you want
+     * Get the list of threads,or you can just pass the thread id that you want
      *
      * @param count  number of thread
      * @param offset specified offset you want
@@ -371,7 +387,7 @@ public class Chat implements AsyncListener {
                     jsonObject.addProperty("typeCode", config.getTypeCode());
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "Get thread send");
+                sendAsyncMessage(jsonObject.toString(), "Get thread send");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -384,12 +400,12 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Get the list of threads or you can just pass the thread id that you want
+     * Get the list of threads,or you can just pass the thread id that you want
      *
-     * @param creatorCoreUserId    if it sets to '0' its considered as it was'nt set
-     * @param partnerCoreUserId    if it sets to '0' its considered as it was'nt set -
+     * @param creatorCoreUserId    if it sets to '0' its considered as it wasn't set
+     * @param partnerCoreUserId    if it sets to '0' its considered as it wasn't set -
      *                             it gets threads of p2p not groups
-     * @param partnerCoreContactId if it sets to '0' its considered as it was'nt set-
+     * @param partnerCoreContactId if it sets to '0' its considered as it wasn't set-
      *                             it gets threads of p2p not groups
      * @param count                Count of the list
      * @param offset               Offset of the list
@@ -462,7 +478,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "Get thread send");
+                sendAsyncMessage(jsonObject.toString(), "Get thread send");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -473,6 +489,7 @@ public class Chat implements AsyncListener {
         }
         return uniqueId;
     }
+
 
     public String getThreads(RequestThread requestThread) {
         ArrayList<Integer> threadIds = requestThread.getThreadIds();
@@ -491,13 +508,13 @@ public class Chat implements AsyncListener {
     /**
      * Get history of the thread
      * <p>
-     * count    count of the messages
-     * order    If order is empty [default = desc] and also you have two option [ asc | desc ]
-     * and order must be lower case
+     * count  :  count of the messages
+     * order  :  If order is empty [default = desc] and also you have two option [ asc | desc ]
+     * and order must be lowered case
      * lastMessageId
      * FirstMessageId
      *
-     * @param threadId Id of the thread that we want to get the history
+     * @param threadId ID of the thread that we want to get the history
      */
     @Deprecated
     public String getHistory(History history, long threadId, String typeCode) {
@@ -528,11 +545,11 @@ public class Chat implements AsyncListener {
      * Gets history of the thread
      * <p>
      *
-     * @Param count    count of the messages
-     * @Param order    If order is empty [default = desc] and also you have two option [ asc | desc ]
+     * @Param count  :  count of the messages
+     * @Param order  :  If order is empty [default = desc] and also you have two option [ asc | desc ]
      * lastMessageId
      * FirstMessageId
-     * @Param long threadId   Id of the thread
+     * @Param long threadId   ID of the thread
      * @Param long fromTime    Start Time of the messages
      * @Param long fromTimeNanos  Start Time of the messages in Nano second
      * @Param long toTime         End time of the messages
@@ -541,8 +558,9 @@ public class Chat implements AsyncListener {
      * @Param @Deprecated long lastMessageId
      * <p>
      * <p>
-     * threadId Id of the thread that we want to get the history
+     * threadId ID of the thread that we want to get the history
      */
+
     public String getHistory(RequestGetHistory request) {
         String uniqueId = generateUniqueId();
 
@@ -575,7 +593,7 @@ public class Chat implements AsyncListener {
      * It clears all messages in the thread
      *
      * @param requestClearHistory threadId  The id of the thread in which you want to clear all messages
-     * @return
+     * @return uniqueId
      */
     public String clearHistory(RequestClearHistory requestClearHistory) {
         String uniqueId = generateUniqueId();
@@ -589,34 +607,36 @@ public class Chat implements AsyncListener {
             chatMessage.setSubjectId(threadId);
             chatMessage.setUniqueId(uniqueId);
 
-            JsonObject jsonObject = (JsonObject) gson.toJsonTree(chatMessage);
-            jsonObject.remove("systemMetadata");
-            jsonObject.remove("metadata");
-            jsonObject.remove("repliedTo");
-            jsonObject.remove("contentCount");
+            chatMessage.setContent(gson.toJson(requestClearHistory));
+//            JsonObject jsonObject = (JsonObject) gson.toJsonTree(chatMessage);
+//            jsonObject.remove("systemMetadata");
+//            jsonObject.remove("metadata");
+//            jsonObject.remove("repliedTo");
+//            jsonObject.remove("contentCount");
 
             String typeCode = config.getTypeCode();
 
-            if (!Util.isNullOrEmpty(typeCode)) {
-                jsonObject.remove("typeCode");
-                jsonObject.addProperty("typeCode", typeCode);
-            } else if (!Util.isNullOrEmpty(config.getTypeCode())) {
-                jsonObject.remove("typeCode");
-                jsonObject.addProperty("typeCode", config.getTypeCode());
-            } else {
-                jsonObject.remove("typeCode");
-            }
+//            if (!Util.isNullOrEmpty(typeCode)) {
+//                jsonObject.remove("typeCode");
+//                jsonObject.addProperty("typeCode", typeCode);
+//            } else if (!Util.isNullOrEmpty(config.getTypeCode())) {
+//                jsonObject.remove("typeCode");
+//                jsonObject.addProperty("typeCode", config.getTypeCode());
+//            } else {
+//                jsonObject.remove("typeCode");
+//            }
 
-            String asyncContent = jsonObject.toString();
+            String asyncContent = gson.toJson(chatMessage);
 
-            sendAsyncMessage(asyncContent, Message, "SEND_CLEAR_HISTORY");
+            sendAsyncMessage(asyncContent, "SEND_CLEAR_HISTORY");
         }
         return uniqueId;
     }
 
     /**
-     * Get all of the contacts of the user
+     * Get all contacts of the user
      */
+
     public String getContacts(RequestGetContact request) {
         Long offset = request.getOffset();
         Long count = request.getCount();
@@ -625,7 +645,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Get all of the contacts of the user
+     * Get all contacts of the user
      */
     public String getContacts(Integer count, Long offset, String typeCode) {
         return getContactMain(count, offset, typeCode);
@@ -634,7 +654,7 @@ public class Chat implements AsyncListener {
     /**
      * Add one contact to the contact list
      *
-     * @param firstName       Notice: if just put fistName without lastName its ok.
+     * @param firstName       Notice: if just put fistName without lastName it's ok.
      * @param lastName        last name of the contact
      * @param cellphoneNumber Notice: If you just  put the cellPhoneNumber doesn't necessary to add email
      * @param email           email of the contact
@@ -705,11 +725,12 @@ public class Chat implements AsyncListener {
     /**
      * Add one contact to the contact list
      * <p>
-     * firstName       Notice: if just put fistName without lastName its ok.
+     * firstName       Notice: if just put fistName without lastName it's ok.
      * lastName        last name of the contact
      * cellphoneNumber Notice: If you just  put the cellPhoneNumber doesn't necessary to add email
      * email           email of the contact
      */
+
     public String addContact(RequestAddContact request) {
 
         String firstName = request.getFirstName();
@@ -765,7 +786,9 @@ public class Chat implements AsyncListener {
 
                 @Override
                 public void onServerError(Response<ContactRemove> response) {
-                    showErrorLog(response.body().getErrorMessage());
+                    if (response.body() != null) {
+                        showErrorLog(response.body().getErrorMessage());
+                    }
                 }
             });
         } else {
@@ -779,6 +802,7 @@ public class Chat implements AsyncListener {
      * <p>
      * userId id of the user that we want to remove from contact list
      */
+
     public String removeContact(RequestRemoveContact request) {
         long userId = request.getUserId();
         String typeCode = config.getTypeCode();
@@ -787,7 +811,7 @@ public class Chat implements AsyncListener {
 
     /**
      * Update contacts
-     * all of the params all required to update
+     * all params all required to update
      */
     public String updateContact(long userId, String firstName, String lastName, String cellphoneNumber, String email, String typeCode) {
 
@@ -850,7 +874,9 @@ public class Chat implements AsyncListener {
 
                 @Override
                 public void onServerError(Response<UpdateContact> response) {
-                    showErrorLog(response.body().getMessage());
+                    if (response.body() != null) {
+                        showErrorLog(response.body().getMessage());
+                    }
                 }
             });
 
@@ -865,8 +891,9 @@ public class Chat implements AsyncListener {
 
     /**
      * Update contacts
-     * all of the params all required
+     * all of params all required
      */
+
     public String updateContact(RequestUpdateContact request) {
         String firstName = request.getFirstName();
         String lastName = request.getLastName();
@@ -880,8 +907,9 @@ public class Chat implements AsyncListener {
 
     /**
      * @param requestSearchContact
-     * @return
+     * @return uniqueId
      */
+
     public String searchContact(RequestSearchContact requestSearchContact) {
         String uniqueId = generateUniqueId();
         String type_code;
@@ -935,9 +963,11 @@ public class Chat implements AsyncListener {
 
                 @Override
                 public void onServerError(Response<SearchContactVO> response) {
-                    String message = response.body().getMessage() != null ? response.body().getMessage() : "";
-                    int errorCode = response.body().getErrorCode() != null ? response.body().getErrorCode() : 0;
-                    getErrorOutPut(message, errorCode, uniqueId);
+                    if (response.body() != null) {
+                        String message = response.body().getMessage() != null ? response.body().getMessage() : "";
+                        int errorCode = response.body().getErrorCode() != null ? response.body().getErrorCode() : 0;
+                        getErrorOutPut(message, errorCode, uniqueId);
+                    }
                 }
             });
 
@@ -950,7 +980,7 @@ public class Chat implements AsyncListener {
     /**
      * It deletes message from the thread.
      *
-     * @param messageId    Id of the message that you want to be removed.
+     * @param messageId    ID of the message that you want to be removed.
      * @param deleteForAll If you want to delete message for everyone you can set it true if u don't want
      *                     you can set it false or even null.
      */
@@ -978,7 +1008,7 @@ public class Chat implements AsyncListener {
                 jsonObject.remove("typeCode");
             }
             String asyncContent = jsonObject.toString();
-            sendAsyncMessage(asyncContent, Message, "SEND_DELETE_MESSAGE");
+            sendAsyncMessage(asyncContent, "SEND_DELETE_MESSAGE");
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
         }
@@ -1037,7 +1067,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_FORWARD_MESSAGE");
+            sendAsyncMessage(asyncContent, "SEND_FORWARD_MESSAGE");
 
         } else {
             if (Util.isNullOrEmpty(uniqueIds)) {
@@ -1055,6 +1085,7 @@ public class Chat implements AsyncListener {
      * threadId   destination thread id
      * messageIds Array of message ids that we want to forward them
      */
+
     public List<String> forwardMessage(RequestForwardMessage request) {
         return forwardMessage(request.getThreadId(), request.getMessageIds(), config.getTypeCode());
     }
@@ -1121,7 +1152,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_DELETE_MESSAGE");
+            sendAsyncMessage(asyncContent, "SEND_DELETE_MESSAGE");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -1133,10 +1164,11 @@ public class Chat implements AsyncListener {
     /**
      * DELETE MESSAGES IN THREAD
      * <p>
-     * messageId    Id of the messages that you want to be removed.
+     * messageId    ID of the messages that you want to be removed.
      * deleteForAll If you want to delete messages for everyone you can set it true if u don't want
      * you can set it false or even null.
      */
+
     public List<String> deleteMultipleMessage(RequestDeleteMessage request) {
 
         return deleteMultipleMessage(request.getMessageIds(), request.isDeleteForAll(), config.getTypeCode());
@@ -1145,10 +1177,11 @@ public class Chat implements AsyncListener {
     /**
      * DELETE MESSAGE IN THREAD
      * <p>
-     * messageId    Id of the message that you want to be removed.
+     * messageId    ID of the message that you want to be removed.
      * deleteForAll If you want to delete message for everyone you can set it true if u don't want
      * you can set it false or even null.
      */
+
     public String deleteMessage(RequestDeleteMessage request) {
         if (request.getMessageIds().size() > 1) {
             return getErrorOutPut(ChatConstant.ERROR_NUMBER_MESSAGE_ID, ChatConstant.ERROR_CODE_NUMBER_MESSAGEID, null);
@@ -1161,10 +1194,11 @@ public class Chat implements AsyncListener {
      * Get the participant list of specific thread
      * <p>
      *
-     * @ param long threadId id of the thread we want to get the participant list
-     * @ param long count number of the participant wanted to get
-     * @ param long offset offset of the participant list
+     * @ param long threadId : id of the thread we want to get the participant list
+     * @ param long count : number of the participant wanted to get
+     * @ param long offset : offset of the participant list
      */
+
     public String getThreadParticipants(RequestThreadParticipant request) {
 
         long count = request.getCount();
@@ -1231,15 +1265,15 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_THREAD_PARTICIPANT");
+            sendAsyncMessage(asyncContent, "SEND_THREAD_PARTICIPANT");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
         }
 
         return uniqueId;
-
     }
+
 
     public String createThread(RequestCreateThread requestCreateThread) {
         int threadType = requestCreateThread.getType();
@@ -1254,7 +1288,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Create the thread to p to p/channel/group. The list below is showing all of the threads type
+     * Create the thread p to p/channel/group. The list below is showing all threads type
      * int NORMAL = 0;
      * int OWNER_GROUP = 1;
      * int PUBLIC_GROUP = 2;
@@ -1317,7 +1351,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_CREATE_THREAD");
+            sendAsyncMessage(asyncContent, "SEND_CREATE_THREAD");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -1333,7 +1367,7 @@ public class Chat implements AsyncListener {
      * Its have three kind of Unique Ids. One of them is for message. One of them for Create Thread
      * and the others for Forward Message or Messages.
      * <p>
-     * int type  Type of the Thread (You can have Thread Type from ThreadType.class)
+     * int type : Type of the Thread (You can have Thread Type from ThreadType.Class)
      * String ownerSsoId  [Optional]
      * List<Invitee> invitees  you can add your invite list here
      * String title  [Optional] title of the group thread
@@ -1347,6 +1381,7 @@ public class Chat implements AsyncListener {
      * -------------  List<Long> forwardedMessageIds  [Optional]
      * }
      */
+
     public ArrayList<String> createThreadWithMessage(RequestCreateThreadWithMessage threadRequest) {
         List<String> forwardUniqueIds;
         JsonObject innerMessageObj = null;
@@ -1378,7 +1413,7 @@ public class Chat implements AsyncListener {
 
                     if (!Util.isNullOrEmptyNumber(threadRequest.getMessage().getForwardedMessageIds())) {
 
-                        /** Its generated new unique id for each forward message*/
+                        /* Its generated new unique id for each forward message*/
                         List<Long> messageIds = threadRequest.getMessage().getForwardedMessageIds();
                         forwardUniqueIds = new ArrayList<>();
 
@@ -1432,7 +1467,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_CREATE_THREAD_WITH_MESSAGE");
+                sendAsyncMessage(jsonObject.toString(), "SEND_CREATE_THREAD_WITH_MESSAGE");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, threadUniqueId);
             }
@@ -1485,10 +1520,10 @@ public class Chat implements AsyncListener {
                     } else {
                         jsonObject.addProperty("typeCode", config.getTypeCode());
                     }
-                } else {
                 }
+                //remove empty else
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_UPDATE_THREAD_INFO");
+                sendAsyncMessage(jsonObject.toString(), "SEND_UPDATE_THREAD_INFO");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -1508,6 +1543,7 @@ public class Chat implements AsyncListener {
      * metadata;
      */
 
+
     public String updateThreadInfo(RequestThreadInfo request) {
         ThreadInfoVO threadInfoVO = new ThreadInfoVO.Builder().title(request.getName())
                 .description(request.getDescription())
@@ -1521,10 +1557,11 @@ public class Chat implements AsyncListener {
      * Reply the message in the current thread and send az message and receive at the
      * <p>
      * messageContent content of the reply message
-     * threadId       id of the thread
-     * messageId      of the message that we want to reply
-     * metaData       meta data of the message
+     * threadId    :   id of the thread
+     * messageId  :    of the message that we want to reply
+     * metaData   :   metadata of the message
      */
+
     public String replyMessage(RequestReplyMessage request) {
         long threadId = request.getThreadId();
         long messageId = request.getMessageId();
@@ -1580,7 +1617,7 @@ public class Chat implements AsyncListener {
         String asyncContent = jsonObject.toString();
 
         if (state == ChatState.ChatReady) {
-            sendAsyncMessage(asyncContent, Message, "SEND_REPLY_MESSAGE");
+            sendAsyncMessage(asyncContent, "SEND_REPLY_MESSAGE");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -1594,8 +1631,9 @@ public class Chat implements AsyncListener {
      * @param messageContent content of the reply message
      * @param threadId       id of the thread
      * @param messageId      of the message that we want to reply
-     * @param systemMetaData meta data of the message
+     * @param systemMetaData metadata of the message
      */
+
     public String replyMessage(String messageContent, long threadId, long messageId, String systemMetaData
             , Integer messageType, String typeCode) {
         return mainReplyMessage(messageContent, threadId, messageId, systemMetaData, messageType, null, typeCode);
@@ -1631,7 +1669,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_SEEN_MESSAGE");
+                sendAsyncMessage(asyncContent, "SEND_SEEN_MESSAGE");
 
             }
         } else {
@@ -1644,6 +1682,7 @@ public class Chat implements AsyncListener {
     /**
      * In order to send seen message you have to call {@link #seenMessage(long, long)}
      */
+
     public String seenMessage(RequestSeenMessage request) {
         long messageId = request.getMessageId();
         long ownerId = request.getOwnerId();
@@ -1654,6 +1693,7 @@ public class Chat implements AsyncListener {
     /**
      * It Gets the information of the current user
      */
+
     public String getUserInfo() {
         String uniqueId = generateUniqueId();
         try {
@@ -1677,7 +1717,7 @@ public class Chat implements AsyncListener {
 
                 showInfoLog("SEND_USER_INFO", asyncContent);
 
-                async.sendMessage(asyncContent, Message);
+                async.sendMessage(asyncContent, Message, null);
 
             }
 
@@ -1695,8 +1735,9 @@ public class Chat implements AsyncListener {
      *                           yC   the Y coordinate of the upper-left corner of the specified rectangular region
      *                           wC   the width of the specified rectangular region
      *                           hC   the height of the specified rectangular region
-     * @return
+     * @return uploadImage(filePath, xC, yC, hC, wC);
      */
+
     public String uploadImage(RequestUploadImage requestUploadImage) {
         String filePath = requestUploadImage.getFilePath();
         int xC = requestUploadImage.getxC();
@@ -1717,7 +1758,7 @@ public class Chat implements AsyncListener {
      * @param yC       the Y coordinate of the upper-left corner of the specified rectangular region
      * @param hC       the height of the specified rectangular region
      * @param wC       the width of the specified rectangular region
-     * @return
+     * @return uniqueId
      */
     @Deprecated
     public String uploadImage(String filePath, int xC, int yC, int hC, int wC) {
@@ -1802,7 +1843,9 @@ public class Chat implements AsyncListener {
 
                                 @Override
                                 public void onServerError(Response<FileImageUpload> response) {
-                                    showErrorLog(response.body().getMessage());
+                                    if (response.body() != null) {
+                                        showErrorLog(response.body().getMessage());
+                                    }
                                 }
                             });
                         } else {
@@ -1884,7 +1927,9 @@ public class Chat implements AsyncListener {
 
                             @Override
                             public void onServerError(Response<FileUpload> response) {
-                                showErrorLog(response.body().getMessage());
+                                if (response.body() != null) {
+                                    showErrorLog(response.body().getMessage());
+                                }
                             }
                         });
                     } else {
@@ -1909,6 +1954,7 @@ public class Chat implements AsyncListener {
         return uniqueId;
     }
 
+
     public String uploadFile(RequestUploadFile requestUploadFile) {
         return uploadFile(requestUploadFile.getFilePath());
     }
@@ -1917,16 +1963,16 @@ public class Chat implements AsyncListener {
      * This method first check the type of the file and then choose the right
      * server and send that
      *
-     * @param description    Its the description that you want to send with file in the thread
+     * @param description    It's the description that you want to send with file in the thread
      * @param filePath       Path of the file that you want to send to thread
-     * @param threadId       Id of the thread that you want to send file
+     * @param threadId       ID of the thread that you want to send file
      * @param systemMetaData [optional]
      * @param xC             The X coordinate of the upper-left corner of the specified rectangular region [optional - for image file]
      * @param yC             The Y coordinate of the upper-left corner of the specified rectangular region[optional - for image file]
      * @param hC             The height of the specified rectangular region[optional -  for image file]
      * @param wC             The width of the specified rectangular region[optional - for image file]
      * @param handler        It is for send file message with progress
-     * @return
+     * @return uniqueId
      */
     public String sendFileMessage(String description, long threadId, String filePath, String systemMetaData, Integer messageType, int xC, int yC, int hC, int wC, ProgressHandler.sendFileMessage handler) {
 
@@ -1976,9 +2022,9 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * @param requestFileMessage description    Its the description that you want to send with file in the thread
+     * @param requestFileMessage description    It's the description that you want to send with file in the thread
      *                           filePath       Path of the file that you want to send to thread
-     *                           threadId       Id of the thread that you want to send file
+     *                           threadId       ID of the thread that you want to send file
      *                           systemMetaData [optional]
      *                           xC             The X coordinate of the upper-left corner of the specified rectangular region [optional - for image file]
      *                           yC             The Y coordinate of the upper-left corner of the specified rectangular region[optional - for image file]
@@ -1987,6 +2033,7 @@ public class Chat implements AsyncListener {
      * @param handler
      * @return
      */
+
     public String sendFileMessage(RequestFileMessage requestFileMessage, ProgressHandler.sendFileMessage handler) {
         long threadId = requestFileMessage.getThreadId();
         String filePath = requestFileMessage.getFilePath();
@@ -2151,25 +2198,25 @@ public class Chat implements AsyncListener {
 
 
         if (state == ChatState.ChatReady) {
-            sendAsyncMessage(asyncContent, Message, "SEND_TXT_MSG_WITH_FILE");
+            sendAsyncMessage(asyncContent, "SEND_TXT_MSG_WITH_FILE");
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
         }
     }
 
     /**
-     * description    description of the message
-     * threadId       id of the thread its wanted to send in
-     * fileUri        uri of the file
-     * mimeType       mime type of the file
-     * systemMetaData metadata of the message
-     * messageType    type of a message
-     * messageId      id of a message
-     * methodName     METHOD_REPLY_MSG or other
-     * handler        description of the interface methods are :
-     * bytesSent        - Bytes sent since the last time this callback was called.
-     * totalBytesSent   - Total number of bytes sent so far.
-     * totalBytesToSend - Total bytes to send.
+     * description  :  description of the message
+     * threadId     :  id of the thread It's wanted to send in
+     * fileUri      :  uri of the file
+     * mimeType     :  mime type of the file
+     * systemMetaData : metadata of the message
+     * messageType  :  type of message
+     * messageId    :  id of a message
+     * methodName   :  METHOD_REPLY_MSG or other
+     * handler      :  description of the interface methods are :
+     * bytesSent    :   - Bytes sent since the last time this callback was called.
+     * totalBytesSent :  - Total number of bytes sent so far.
+     * totalBytesToSend : - Total bytes to send.
      */
     private void uploadImageFileMessage(LFileUpload lFileUpload) {
 
@@ -2325,7 +2372,9 @@ public class Chat implements AsyncListener {
 
                         @Override
                         public void onServerError(Response<FileImageUpload> response) {
-                            showErrorLog(response.body().getMessage());
+                            if (response.body() != null) {
+                                showErrorLog(response.body().getMessage());
+                            }
                         }
                     });
 
@@ -2349,10 +2398,11 @@ public class Chat implements AsyncListener {
      * Reply the message in the current thread and send az message and receive at the
      * <p>
      * messageContent content of the reply message
-     * threadId       id of the thread
-     * messageId      of the message that we want to reply
-     * metaData       meta data of the message
+     * threadId   :   id of the thread
+     * messageId  :   of the message that we want to reply
+     * metaData   :    metadata of the message
      */
+
     public String replyFileMessage(RequestReplyFileMessage request, ProgressHandler.sendFileMessage handler) {
         String uniqueId = generateUniqueId();
         long threadId = request.getThreadId();
@@ -2415,7 +2465,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Message can be edit when you pass the message id and the edited
+     * Message can be editing when you pass the message id and the edited
      * content in order to edit your Message.
      */
     @Deprecated
@@ -2446,7 +2496,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_EDIT_MESSAGE");
+                sendAsyncMessage(asyncContent, "SEND_EDIT_MESSAGE");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2459,9 +2509,10 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Message can be edit when you pass the message id and the edited
+     * Message can be editing when you pass the message id and the edited
      * content in order to edit your Message.
      */
+
     public String editMessage(RequestEditMessage request) {
         String uniqueId = generateUniqueId();
         try {
@@ -2496,7 +2547,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_EDIT_MESSAGE");
+                sendAsyncMessage(jsonObject.toString(), "SEND_EDIT_MESSAGE");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
             }
@@ -2509,7 +2560,7 @@ public class Chat implements AsyncListener {
 
     /**
      * @param contactIds List of CONTACT IDs
-     * @param threadId   Id of the thread that you are {*NOTICE*}admin of that and you want to
+     * @param threadId   ID of the thread that you are {*NOTICE*}admin of that,and you want to
      *                   add someone as a participant.
      */
     @Deprecated
@@ -2543,7 +2594,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_ADD_PARTICIPANTS");
+                sendAsyncMessage(asyncContent, "SEND_ADD_PARTICIPANTS");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2559,9 +2610,10 @@ public class Chat implements AsyncListener {
 
     /**
      * contactIds  List of CONTACT IDs
-     * threadId   Id of the thread that you are {*NOTICE*}admin of that and you are going to
+     * threadId   ID of the thread that you are {*NOTICE*}admin of that,and you are going to
      * add someone as a participant.
      */
+
     public String addParticipants(RequestAddParticipants request) {
 
         String uniqueId = generateUniqueId();
@@ -2599,7 +2651,7 @@ public class Chat implements AsyncListener {
                 jsonObject.remove("typeCode");
             }
 
-            sendAsyncMessage(jsonObject.toString(), Message, "SEND_ADD_PARTICIPANTS");
+            sendAsyncMessage(jsonObject.toString(), "SEND_ADD_PARTICIPANTS");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2610,7 +2662,7 @@ public class Chat implements AsyncListener {
 
     /**
      * @param participantIds List of PARTICIPANT IDs that gets from {@link #getThreadParticipants}
-     * @param threadId       Id of the thread that we wants to remove their participant
+     * @param threadId       ID of the thread that we want to remove their participant
      */
     public String removeParticipants(long threadId, List<Long> participantIds, String typeCode) {
         String uniqueId = generateUniqueId();
@@ -2650,7 +2702,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_REMOVE_PARTICIPANT");
+            sendAsyncMessage(asyncContent, "SEND_REMOVE_PARTICIPANT");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2660,8 +2712,9 @@ public class Chat implements AsyncListener {
 
     /**
      * participantIds List of PARTICIPANT IDs from Thread's Participants object
-     * threadId       Id of the thread that we wants to remove their participant
+     * threadId       ID of the thread that we want to remove their participant
      */
+
     public String removeParticipants(RequestRemoveParticipants request) {
 
         List<Long> participantIds = request.getParticipantIds();
@@ -2700,7 +2753,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_LEAVE_THREAD");
+            sendAsyncMessage(asyncContent, "SEND_LEAVE_THREAD");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2711,9 +2764,11 @@ public class Chat implements AsyncListener {
 
     /**
      * leaves the thread
+     * <p>
      *
      * @ param threadId id of the thread
      */
+
     public String leaveThread(RequestLeaveThread request) {
 
         return leaveThread(request.getThreadId(), config.getTypeCode());
@@ -2722,6 +2777,7 @@ public class Chat implements AsyncListener {
     /**
      * @param requestSetAuditor You can add auditor role to someone in a thread using user id.
      */
+
     public String addAuditor(RequestSetAuditor requestSetAuditor) {
         SetRuleVO setRuleVO = new SetRuleVO();
 //        BeanUtils.copyProperties(requestSetAuditor, setRuleVO);
@@ -2733,6 +2789,7 @@ public class Chat implements AsyncListener {
     /**
      * @param requestSetAdmin You can add admin role to someone in a thread using user id.
      */
+
     public String addAdmin(RequestSetAdmin requestSetAdmin) {
         SetRuleVO setRuleVO = new SetRuleVO();
 //        BeanUtils.copyProperties(requestSetAdmin, setRuleVO);
@@ -2777,7 +2834,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = gson.toJson(chatMessage);
 
-            sendAsyncMessage(asyncContent, Message, "SET_RULE_TO_USER");
+            sendAsyncMessage(asyncContent, "SET_RULE_TO_USER");
         }
         return uniqueId;
     }
@@ -2785,6 +2842,7 @@ public class Chat implements AsyncListener {
     /**
      * @param requestSetAuditor You can add auditor role to someone in a thread using user id.
      */
+
     public String removeAuditor(RequestSetAuditor requestSetAuditor) {
         SetRuleVO setRuleVO = new SetRuleVO();
 
@@ -2797,6 +2855,7 @@ public class Chat implements AsyncListener {
     /**
      * @param requestSetAdmin You can add admin role to someone in a thread using user id.
      */
+
     public String removeAdmin(RequestSetAdmin requestSetAdmin) {
         SetRuleVO setRuleVO = new SetRuleVO();
         BeanUtils.copyProperties(requestSetAdmin, setRuleVO);
@@ -2836,7 +2895,7 @@ public class Chat implements AsyncListener {
                 chatMessage.setTypeCode(config.getTypeCode());
             }
             String asyncContent = gson.toJson(chatMessage);
-            sendAsyncMessage(asyncContent, Message, "REMOVE_RULE_FROM_USER");
+            sendAsyncMessage(asyncContent, "REMOVE_RULE_FROM_USER");
         }
         return uniqueId;
     }
@@ -2886,7 +2945,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_BLOCK");
+            sendAsyncMessage(asyncContent, "SEND_BLOCK");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2897,11 +2956,13 @@ public class Chat implements AsyncListener {
 
     /**
      * It blocks the thread
+     * <p>
      *
      * @ param contactId id of the contact
      * @ param threadId  id of the thread
      * @ param userId    id of the user
      */
+
     public String block(RequestBlock request) {
         Long contactId = request.getContactId();
         long threadId = request.getThreadId();
@@ -2912,12 +2973,12 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * It unblocks thread with three way
+     * It unblocks thread with three_way
      *
      * @param blockId   the id that came from getBlockList
-     * @param userId
-     * @param threadId  Id of the thread
-     * @param contactId Id of the contact
+     * @param userId    ID of the userId
+     * @param threadId  ID of the thread
+     * @param contactId ID of the contact
      */
     public String unblock(Long blockId, Long userId, Long threadId, Long contactId, String typeCode) {
         String uniqueId = generateUniqueId();
@@ -2970,7 +3031,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_UN_BLOCK");
+            sendAsyncMessage(asyncContent, "SEND_UN_BLOCK");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -2980,13 +3041,15 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * It unblocks thread with three way
+     * It unblocks thread with three_way
+     * <p>
      *
      * @ param blockId it can be found in the response of getBlockList
-     * @ param userId Id of the user
-     * @ param threadId Id of the thread
-     * @ param contactId Id of the contact
+     * @ param userId ID of the user
+     * @ param threadId ID of the thread
+     * @ param contactId ID of the contact
      */
+
     public String unblock(RequestUnBlock request) {
         long contactId = request.getContactId();
         long threadId = request.getThreadId();
@@ -3036,7 +3099,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_BLOCK_List");
+            sendAsyncMessage(asyncContent, "SEND_BLOCK_List");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -3047,9 +3110,11 @@ public class Chat implements AsyncListener {
     /**
      * It gets the list of the contacts that is on block list
      */
+
     public String getBlockList(RequestBlockList request) {
         return getBlockList(request.getCount(), request.getOffset(), config.getTypeCode());
     }
+
 
     public String getMessageDeliveredList(RequestDeliveredMessageList requestParams) {
         return deliveredMessageList(requestParams);
@@ -3059,8 +3124,9 @@ public class Chat implements AsyncListener {
      * Get the list of the participants that saw the specific message
      *
      * @param requestParams
-     * @return
+     * @return seenMessageList(requestParams)
      */
+
     public String getMessageSeenList(RequestSeenMessageList requestParams) {
         return seenMessageList(requestParams);
     }
@@ -3100,7 +3166,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_MUTE_THREAD");
+                sendAsyncMessage(jsonObject.toString(), "SEND_MUTE_THREAD");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -3116,6 +3182,7 @@ public class Chat implements AsyncListener {
     /**
      * Mute the thread so notification is off for that thread
      */
+
     public String muteThread(RequestMuteThread request) {
         return muteThread(request.getThreadId(), config.getTypeCode());
     }
@@ -3123,6 +3190,7 @@ public class Chat implements AsyncListener {
     /**
      * It Un mutes the thread so notification is on for that thread
      */
+
     public String unMuteThread(RequestMuteThread request) {
         String uniqueId = generateUniqueId();
         JsonObject jsonObject;
@@ -3156,7 +3224,7 @@ public class Chat implements AsyncListener {
                 }
 
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_UN_MUTE_THREAD");
+                sendAsyncMessage(jsonObject.toString(), "SEND_UN_MUTE_THREAD");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
             }
@@ -3167,7 +3235,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * Un mute the thread so notification is on for that thread
+     * Unmute the thread so notification is on for that thread
      */
     @Deprecated
     public String unMuteThread(long threadId) {
@@ -3193,7 +3261,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_UN_MUTE_THREAD");
+                sendAsyncMessage(asyncContent, "SEND_UN_MUTE_THREAD");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
             }
@@ -3208,8 +3276,9 @@ public class Chat implements AsyncListener {
      * It is possible to pin at most 5 thread
      *
      * @param requestPinThread
-     * @return
+     * @return uniqueId
      */
+
     public String pinThread(RequestPinThread requestPinThread) {
         String uniqueId = generateUniqueId();
         JsonObject jsonObject;
@@ -3244,7 +3313,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_PIN_THREAD");
+                sendAsyncMessage(jsonObject.toString(), "SEND_PIN_THREAD");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -3262,8 +3331,9 @@ public class Chat implements AsyncListener {
      * Unpin the thread already pined with thread id
      *
      * @param requestPinThread
-     * @return
+     * @return uniqueId
      */
+
     public String unPinThread(RequestPinThread requestPinThread) {
         String uniqueId = generateUniqueId();
         JsonObject jsonObject;
@@ -3297,7 +3367,7 @@ public class Chat implements AsyncListener {
                 }
 
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_UN_PIN_THREAD");
+                sendAsyncMessage(jsonObject.toString(), "SEND_UN_PIN_THREAD");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
             }
@@ -3306,6 +3376,7 @@ public class Chat implements AsyncListener {
         }
         return uniqueId;
     }
+
 
     public String getAdminList(RequestGetAdmin requestGetAdmin) {
         int count = (int) requestGetAdmin.getCount();
@@ -3343,7 +3414,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "SEND_REPORT_SPAM");
+            sendAsyncMessage(asyncContent, "SEND_REPORT_SPAM");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -3353,10 +3424,12 @@ public class Chat implements AsyncListener {
 
     /**
      * If someone that is not in your contact list tries to send message to you
-     * their spam value is true and you can call this method in order to set that to false
+     * their spam value is true,so you can call this method in order to set that to false
+     * <p>
      *
-     * @ param long threadId Id of the thread
+     * @ param long threadId ID of the thread
      */
+
     public String spam(RequestSpam request) {
         String uniqueId = generateUniqueId();
 
@@ -3390,7 +3463,7 @@ public class Chat implements AsyncListener {
                     jsonObject.addProperty("typeCode", config.getTypeCode());
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_REPORT_SPAM");
+                sendAsyncMessage(jsonObject.toString(), "SEND_REPORT_SPAM");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
             }
@@ -3426,7 +3499,7 @@ public class Chat implements AsyncListener {
                     chatMessage.setTypeCode(config.getTypeCode());
                 }
 
-                sendAsyncMessage(gson.toJson(chatMessage), Message, "SEND_INTERACT_MESSAGE");
+                sendAsyncMessage(gson.toJson(chatMessage), "SEND_INTERACT_MESSAGE");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -3438,6 +3511,7 @@ public class Chat implements AsyncListener {
 
         return uniqueId;
     }
+
 
     public ArrayList<String> createThreadWithFileMessage(RequestCreateThreadWithFile request) {
         ArrayList<String> uniqueIds = new ArrayList<>();
@@ -3563,7 +3637,7 @@ public class Chat implements AsyncListener {
 
                     if (!Util.isNullOrEmptyNumber(threadRequest.getMessage().getForwardedMessageIds())) {
 
-                        /** Its generated new unique id for each forward message*/
+                        /* Its generated new unique id for each forward message*/
                         JsonElement element = gson.toJsonTree(forwardUniqueIds, new TypeToken<List<Long>>() {
                         }.getType());
 
@@ -3608,7 +3682,7 @@ public class Chat implements AsyncListener {
                     jsonObject.remove("typeCode");
                 }
 
-                sendAsyncMessage(jsonObject.toString(), Message, "SEND_CREATE_THREAD_WITH_MESSAGE");
+                sendAsyncMessage(jsonObject.toString(), "SEND_CREATE_THREAD_WITH_MESSAGE");
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, threadUniqueId);
             }
@@ -3647,7 +3721,6 @@ public class Chat implements AsyncListener {
                                 int errorCode = fileUpload.getErrorCode();
                                 String jsonError = getErrorOutPut(errorMessage, errorCode, finalUniqueId);
                                 showErrorLog(jsonError);
-
                             } else {
                                 ResultFile resultFile = fileUpload.getResult();
 
@@ -3658,7 +3731,6 @@ public class Chat implements AsyncListener {
                                 metaDataContent.setHashCode(resultFile.getHashCode());
                                 metaDataContent.setId(resultFile.getId());
                                 metaDataFile.setFile(metaDataContent);
-
 
                                 uploadFileListener.fileUploaded(gson.toJson(metaDataFile));
                             }
@@ -3671,18 +3743,18 @@ public class Chat implements AsyncListener {
 
                         @Override
                         public void onServerError(Response<FileUpload> response) {
-                            showErrorLog(response.body().getMessage());
+                            if (response.body() != null) {
+                                showErrorLog(response.body().getMessage());
+                            }
                         }
                     });
                 } else {
                     String jsonError = getErrorOutPut(ChatConstant.ERROR_NOT_IMAGE, ChatConstant.ERROR_CODE_NOT_IMAGE, null);
                     showErrorLog(jsonError);
                 }
-
             } else {
                 showErrorLog("File is not Exist");
             }
-
         } catch (Exception e) {
             showErrorLog(e.getCause().getMessage());
         }
@@ -3738,7 +3810,6 @@ public class Chat implements AsyncListener {
 
                             requestFile = RequestBody.create(MediaType.parse("image/*"), outputFile);
                         } else {
-
                             fileApi = RetrofitHelperFileServer.getInstance(config.getFileServer()).create(FileApi.class);
 
                             requestFile = RequestBody.create(MediaType.parse("image/*"), file);
@@ -3776,7 +3847,6 @@ public class Chat implements AsyncListener {
 
                                     uploadFileListener.fileUploaded(gson.toJson(resultImageFile));
                                 }
-
                             }
 
                             @Override
@@ -3786,16 +3856,16 @@ public class Chat implements AsyncListener {
 
                             @Override
                             public void onServerError(Response<FileImageUpload> response) {
-                                showErrorLog(response.body().getMessage());
+                                if (response.body() != null) {
+                                    showErrorLog(response.body().getMessage());
+                                }
                             }
                         });
                     } else {
                         String jsonError = getErrorOutPut(ChatConstant.ERROR_NOT_IMAGE, ChatConstant.ERROR_CODE_NOT_IMAGE, null);
                         showErrorLog(jsonError);
-
                     }
                 }
-
             } else {
                 showErrorLog("FileServer url Is null");
             }
@@ -3803,7 +3873,6 @@ public class Chat implements AsyncListener {
             showErrorLog(e.getCause().getMessage());
             getErrorOutPut(ChatConstant.ERROR_UPLOAD_FILE, ChatConstant.ERROR_CODE_UPLOAD_FILE, finalUniqueId);
         }
-
     }
 
     private void pingWithDelay() {
@@ -3835,7 +3904,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = gson.toJson(chatMessage);
 
-            sendAsyncMessage(asyncContent, Message, "CHAT PING");
+            sendAsyncMessage(asyncContent, "CHAT PING");
         }
     }
 
@@ -3870,7 +3939,7 @@ public class Chat implements AsyncListener {
 
     private void handleError(ChatMessage chatMessage) {
 
-        chatSdk.asyncSdk.model.Error error = gson.fromJson(chatMessage.getContent(), chatSdk.asyncSdk.model.Error.class);
+        Error error = gson.fromJson(chatMessage.getContent(), Error.class);
 
         String errorMessage = error.getMessage();
         long errorCode = error.getCode();
@@ -3915,7 +3984,7 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * When the new message arrived we send the deliver message to the sender user.
+     * When the new message arrived we send the delivery message to the sender user.
      */
     private void handleNewMessage(ChatMessage chatMessage) {
 
@@ -3943,11 +4012,11 @@ public class Chat implements AsyncListener {
             }
             showInfoLog("RECEIVED_NEW_MESSAGE", json);
 
-            if (ownerId != getUserId()) {
+            if (ownerId != getUserId() && messageVO != null) {
                 ChatMessage message = getChatMessage(messageVO);
 
                 String asyncContent = gson.toJson(message);
-                async.sendMessage(asyncContent, Message);
+                async.sendMessage(asyncContent, Message, null);
 
                 showInfoLog("SEND_DELIVERY_MESSAGE");
 
@@ -4013,11 +4082,11 @@ public class Chat implements AsyncListener {
         showInfoLog("RECEIVED_FORWARD_MESSAGE", json);
         listener.onNewMessage(json, chatResponse);
 
-        if (ownerId != getUserId()) {
+        if (ownerId != getUserId() && messageVO != null) {
             ChatMessage message = getChatMessage(messageVO);
             String asyncContent = gson.toJson(message);
             showInfoLog("SEND_DELIVERY_MESSAGE", asyncContent);
-            async.sendMessage(asyncContent, Message);
+            async.sendMessage(asyncContent, Message, null);
         }
     }
 
@@ -4230,7 +4299,7 @@ public class Chat implements AsyncListener {
 
         String asyncContent = jsonObject.toString();
 
-        sendAsyncMessage(asyncContent, Message, "SEND GET THREAD HISTORY");
+        sendAsyncMessage(asyncContent, "SEND GET THREAD HISTORY");
     }
 
     private void handleOutPutDeliveredMessageList(ChatMessage chatMessage) {
@@ -4347,6 +4416,7 @@ public class Chat implements AsyncListener {
         showInfoLog("RECEIVE_BLOCK", jsonBlock);
     }
 
+
     private void signalMessage(RequestSignalMsg requestSignalMsg) {
 
         String uniqueId = generateUniqueId();
@@ -4373,7 +4443,7 @@ public class Chat implements AsyncListener {
             jsonObjectCht.addProperty("typeCode", config.getTypeCode());
         }
         String asyncContent = jsonObjectCht.toString();
-        sendAsyncMessage(asyncContent, Message, "SEND SIGNAL_TYPE " + signalType);
+        sendAsyncMessage(asyncContent, "SEND SIGNAL_TYPE " + signalType);
     }
 
     private void handleClearHistory(ChatMessage chatMessage) {
@@ -4545,7 +4615,7 @@ public class Chat implements AsyncListener {
 
             String asyncContent = jsonObject.toString();
 
-            sendAsyncMessage(asyncContent, Message, "GET_CONTACT_SEND");
+            sendAsyncMessage(asyncContent, "GET_CONTACT_SEND");
 
         } else {
             getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -4562,6 +4632,7 @@ public class Chat implements AsyncListener {
         return jsonError;
     }
 
+
     private int getExpireAmount() {
         if (Util.isNullOrEmpty(expireAmount)) {
             expireAmount = 2 * 24 * 60 * 60;
@@ -4570,9 +4641,10 @@ public class Chat implements AsyncListener {
     }
 
     /**
-     * @param expireSecond participants and contacts have an expire date in cache and after expireSecond
+     * @param expireSecond participants and contacts have an expiry date in cache and after expireSecond
      *                     they are going to delete from the cache/
      */
+
     public void setExpireAmount(int expireSecond) {
         this.expireAmount = expireSecond;
     }
@@ -4616,7 +4688,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_DELIVERED_MESSAGE_LIST");
+                sendAsyncMessage(asyncContent, "SEND_DELIVERED_MESSAGE_LIST");
 
             } else {
                 getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
@@ -4667,7 +4739,7 @@ public class Chat implements AsyncListener {
 
                 String asyncContent = jsonObject.toString();
 
-                sendAsyncMessage(asyncContent, Message, "SEND_SEEN_MESSAGE_LIST");
+                sendAsyncMessage(asyncContent, "SEND_SEEN_MESSAGE_LIST");
 
             } catch (Throwable e) {
                 showErrorLog(e.getCause().getMessage());
@@ -4701,11 +4773,11 @@ public class Chat implements AsyncListener {
         return outPutParticipant;
     }
 
-    private void sendAsyncMessage(String asyncContent, AsyncMessageType type, String logMessage) {
+    private void sendAsyncMessage(String asyncContent, String logMessage) {
         if (state == ChatState.ChatReady) {
             showInfoLog(logMessage, asyncContent);
             try {
-                async.sendMessage(asyncContent, type);
+                async.sendMessage(asyncContent, AsyncMessageType.Message, null);
             } catch (Exception e) {
                 showErrorLog(e.getMessage());
                 return;
@@ -4818,7 +4890,7 @@ public class Chat implements AsyncListener {
     }
 
     private String reformatError(boolean hasError, ChatMessage chatMessage, OutPutHistory outPut) {
-        chatSdk.asyncSdk.model.Error error = gson.fromJson(chatMessage.getContent(), Error.class);
+        Error error = gson.fromJson(chatMessage.getContent(), Error.class);
         showErrorLog("RECEIVED_ERROR", chatMessage.getContent());
         showErrorLog("ErrorMessage", error.getMessage());
         showErrorLog("ErrorCode", String.valueOf(error.getCode()));
@@ -4911,7 +4983,7 @@ public class Chat implements AsyncListener {
 
             if (center.contains(",")) {
                 String latitude = center.substring(0, center.lastIndexOf(','));
-                String longitude = center.substring(center.lastIndexOf(',') + 1, center.length());
+                String longitude = center.substring(center.lastIndexOf(',') + 1);
                 mapLocation.setLatitude(Double.parseDouble(latitude));
                 mapLocation.setLongitude(Double.parseDouble(longitude));
             }
@@ -4960,13 +5032,16 @@ public class Chat implements AsyncListener {
         return signalIntervalTime;
     }
 
+
     public void setSignalIntervalTime(int signalIntervalTime) {
         this.signalIntervalTime = signalIntervalTime;
     }
 
+
     public interface GetThreadHandler {
         void onGetThread();
     }
+
 
     public interface SendTextMessageHandler {
         void onSent(String uniqueId, long threadId);
