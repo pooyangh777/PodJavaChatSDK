@@ -1,8 +1,6 @@
 package chatSdk.dataTransferObject.user.inPut;
 
 
-import chatSdk.mainmodel.UserInfo;
-
 public class ResultUserInfo {
     private UserInfo user;
 

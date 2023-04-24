@@ -41,7 +41,7 @@ import chatSdk.networking.retrofithelper.ApiListener;
 import chatSdk.networking.retrofithelper.RetrofitHelperFileServer;
 import chatSdk.networking.retrofithelper.RetrofitHelperPlatformHost;
 import chatSdk.networking.retrofithelper.RetrofitUtil;
-import chatSdk.mainmodel.Thread;
+import chatSdk.dataTransferObject.thread.inPut.Conversation;
 import lombok.Getter;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -500,7 +500,6 @@ public class Chat implements AsyncListener {
         String threadName = requestThread.getThreadName();
         long count = requestThread.getCount();
         String typeCode = config.getTypeCode();
-
         return getThreads((int) count, offset, threadIds, threadName, creatorCoreUserId, partnerCoreUserId
                 , partnerCoreContactId, typeCode);
     }
@@ -3955,8 +3954,8 @@ public class Chat implements AsyncListener {
 
     private void handleThreadInfoUpdated(ChatMessage chatMessage) {
         ResultThread resultThread = new ResultThread();
-        Thread thread = gson.fromJson(chatMessage.getContent(), Thread.class);
-        resultThread.setThread(thread);
+        Conversation conversation = gson.fromJson(chatMessage.getContent(), Conversation.class);
+        resultThread.setThread(conversation);
         ChatResponse<ResultThread> chatResponse = new ChatResponse<>();
         chatResponse.setResult(resultThread);
         chatResponse.setUniqueId(chatMessage.getUniqueId());
@@ -3967,9 +3966,9 @@ public class Chat implements AsyncListener {
     private void handleRemoveFromThread(ChatMessage chatMessage) {
         ChatResponse<ResultThread> chatResponse = new ChatResponse<>();
         ResultThread resultThread = new ResultThread();
-        Thread thread = new Thread();
-        thread.setId(chatMessage.getSubjectId());
-        resultThread.setThread(thread);
+        Conversation conversation = new Conversation();
+        conversation.setId(chatMessage.getSubjectId());
+        resultThread.setThread(conversation);
         String content = gson.toJson(chatResponse);
         showInfoLog("RECEIVED_REMOVED_FROM_THREAD", content);
         listener.OnRemovedFromThread(content, chatResponse);
@@ -4344,9 +4343,9 @@ public class Chat implements AsyncListener {
 
     private void handleUpdateThreadInfo(ChatMessage chatMessage) {
         ChatResponse<ResultThread> chatResponse = new ChatResponse<>();
-        Thread thread = gson.fromJson(chatMessage.getContent(), Thread.class);
+        Conversation conversation = gson.fromJson(chatMessage.getContent(), Conversation.class);
         ResultThread resultThread = new ResultThread();
-        resultThread.setThread(thread);
+        resultThread.setThread(conversation);
         chatResponse.setErrorCode(0);
         chatResponse.setErrorMessage("");
         chatResponse.setHasError(false);
@@ -4374,10 +4373,10 @@ public class Chat implements AsyncListener {
     }
 
     private void handleAddParticipant(ChatMessage chatMessage) {
-        Thread thread = gson.fromJson(chatMessage.getContent(), Thread.class);
+        Conversation conversation = gson.fromJson(chatMessage.getContent(), Conversation.class);
         ChatResponse<ResultAddParticipant> chatResponse = new ChatResponse<>();
         ResultAddParticipant resultAddParticipant = new ResultAddParticipant();
-        resultAddParticipant.setThread(thread);
+        resultAddParticipant.setThread(conversation);
         chatResponse.setErrorCode(0);
         chatResponse.setErrorMessage("");
         chatResponse.setHasError(false);
@@ -4861,11 +4860,11 @@ public class Chat implements AsyncListener {
         chatResponse.setUniqueId(chatMessage.getUniqueId());
         ResultThread resultThread = new ResultThread();
 
-        Thread thread = gson.fromJson(chatMessage.getContent(), Thread.class);
-        resultThread.setThread(thread);
+        Conversation conversation = gson.fromJson(chatMessage.getContent(), Conversation.class);
+        resultThread.setThread(conversation);
         chatResponse.setResult(resultThread);
 
-        resultThread.setThread(thread);
+        resultThread.setThread(conversation);
         return chatResponse;
     }
 
@@ -4874,11 +4873,11 @@ public class Chat implements AsyncListener {
      */
     private ChatResponse<ResultThreads> reformatGetThreadsResponse(ChatMessage chatMessage) {
         ChatResponse<ResultThreads> outPutThreads = new ChatResponse<>();
-        ArrayList<Thread> threads = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Thread>>() {
+        ArrayList<Conversation> conversations = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Conversation>>() {
         }.getType());
 
         ResultThreads resultThreads = new ResultThreads();
-        resultThreads.setThreads(threads);
+        resultThreads.setThreads(conversations);
         resultThreads.setContentCount(chatMessage.getContentCount());
         outPutThreads.setErrorCode(0);
         outPutThreads.setErrorMessage("");

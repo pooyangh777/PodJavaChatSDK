@@ -10,7 +10,7 @@ Fanap's POD Chat Service - JAVA SDK
 - [x] Caching system
 - [x] Static file response
 - [x] Downlaod / Upload File or Data or Image resumebble
-- [x] Manage threads and messages
+- [x] Manage conversations and messages
 - [x] Manage multiple accounts at the same time
 
 ## How to use?

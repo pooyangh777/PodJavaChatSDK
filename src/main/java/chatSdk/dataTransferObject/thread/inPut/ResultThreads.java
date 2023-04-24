@@ -1,12 +1,10 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
 
-import chatSdk.mainmodel.Thread;
-
 import java.util.List;
 
 public class ResultThreads {
-    private List<Thread> threads;
+    private List<Conversation> conversations;
     private long contentCount;
     private boolean hasNext;
     private long nextOffset;
@@ -35,11 +33,11 @@ public class ResultThreads {
         this.nextOffset = nextOffset;
     }
 
-    public List<Thread> getThreads() {
-        return threads;
+    public List<Conversation> getThreads() {
+        return conversations;
     }
 
-    public void setThreads(List<Thread> threads) {
-        this.threads = threads;
+    public void setThreads(List<Conversation> conversations) {
+        this.conversations = conversations;
     }
 }

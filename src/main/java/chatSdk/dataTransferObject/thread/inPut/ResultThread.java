@@ -1,16 +1,14 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
 
-import chatSdk.mainmodel.Thread;
-
 public class ResultThread {
-    private Thread thread;
+    private Conversation conversation;
 
-    public Thread getThread() {
-        return thread;
+    public Conversation getThread() {
+        return conversation;
     }
 
-    public void setThread(Thread thread) {
-        this.thread = thread;
+    public void setThread(Conversation conversation) {
+        this.conversation = conversation;
     }
 }
