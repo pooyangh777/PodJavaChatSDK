@@ -16,8 +16,8 @@ public class ChatMessageContent {
     private String name;
     @SerializedName("new")
     private boolean New;
-    private int firstMessageId;
-    private int lastMessageId;
+    private Integer firstMessageId;
+    private Integer lastMessageId;
     private long offset;
     private String order;
     private List<Integer> threadIds;

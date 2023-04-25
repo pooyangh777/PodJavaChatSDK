@@ -331,177 +331,19 @@ public class Chat implements AsyncListener {
         return sendTextMessage(textMessage, threadId, messageType, jsonMetaData, typeCode);
     }
 
-    /**
-     * Get the list of threads,or you can just pass the thread id that you want
-     *
-     * @param count  number of thread
-     * @param offset specified offset you want
-     */
-    @Deprecated
-    public String getThreads(Integer count, Long offset, ArrayList<Integer> threadIds, String threadName) {
-
-        String uniqueId;
-        count = count != null ? count : 50;
-        uniqueId = generateUniqueId();
-        try {
-            if (state == ChatState.ChatReady) {
-                ChatMessageContent chatMessageContent = new ChatMessageContent();
-
-                if (offset != null) {
-                    chatMessageContent.setOffset(offset);
-                } else {
-                    chatMessageContent.setOffset(0);
-                }
-
-                chatMessageContent.setCount(count);
-                if (threadName != null) {
-                    chatMessageContent.setName(threadName);
-                }
-                JsonObject jObj;
-
-                if (threadIds != null && threadIds.size() > 0) {
-                    chatMessageContent.setThreadIds(threadIds);
-                    jObj = (JsonObject) gson.toJsonTree(chatMessageContent);
-
-                } else {
-                    jObj = (JsonObject) gson.toJsonTree(chatMessageContent);
-                    jObj.remove("threadIds");
-                }
-
-                jObj.remove("lastMessageId");
-                jObj.remove("firstMessageId");
-
-                ChatMessage chatMessage = new ChatMessage();
-                chatMessage.setContent(jObj.toString());
-                chatMessage.setType(ChatMessageType.GET_THREADS);
-                chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
-                chatMessage.setToken(config.getToken());
-                chatMessage.setUniqueId(uniqueId);
-
-                JsonObject jsonObject = (JsonObject) gson.toJsonTree(chatMessage);
-
-                if (Util.isNullOrEmpty(config.getTypeCode())) {
-                    jsonObject.remove("typeCode");
-                } else {
-                    jsonObject.remove("typeCode");
-                    jsonObject.addProperty("typeCode", config.getTypeCode());
-                }
-
-                sendAsyncMessage(jsonObject.toString(), "Get thread send");
-
-            } else {
-                getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
+    private void sendAsyncMessage(String asyncContent, String logMessage) {
+        if (state == ChatState.ChatReady) {
+            showInfoLog(logMessage, asyncContent);
+            try {
+                async.sendMessage(asyncContent, AsyncMessageType.Message, null);
+            } catch (Exception e) {
+                showErrorLog(e.getMessage());
+                return;
             }
-
-        } catch (Throwable e) {
-            showErrorLog(e.getCause().getMessage());
+            pingWithDelay();
+        } else {
+            getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, null);
         }
-        return uniqueId;
-    }
-
-    /**
-     * Get the list of threads,or you can just pass the thread id that you want
-     *
-     * @param creatorCoreUserId    if it sets to '0' its considered as it wasn't set
-     * @param partnerCoreUserId    if it sets to '0' its considered as it wasn't set -
-     *                             it gets threads of p2p not groups
-     * @param partnerCoreContactId if it sets to '0' its considered as it wasn't set-
-     *                             it gets threads of p2p not groups
-     * @param count                Count of the list
-     * @param offset               Offset of the list
-     * @param threadIds            List of thread ids that you want to get
-     * @param threadName           Name of the thread that you want to get
-     */
-    @Deprecated
-    public String getThreads(Integer count, Long offset, ArrayList<Integer> threadIds, String threadName,
-                             long creatorCoreUserId, long partnerCoreUserId, long partnerCoreContactId, String typeCode) {
-
-        String uniqueId;
-        count = count != null ? count : 50;
-        uniqueId = generateUniqueId();
-        try {
-
-            if (state == ChatState.ChatReady) {
-                ChatMessageContent chatMessageContent = new ChatMessageContent();
-
-                if (offset != null) {
-                    chatMessageContent.setOffset(offset);
-                } else {
-                    chatMessageContent.setOffset(0);
-                }
-
-                chatMessageContent.setCount(count);
-                if (threadName != null) {
-                    chatMessageContent.setName(threadName);
-                }
-                JsonObject jObj;
-
-                if (threadIds != null && threadIds.size() > 0) {
-                    chatMessageContent.setThreadIds(threadIds);
-                    jObj = (JsonObject) gson.toJsonTree(chatMessageContent);
-
-                } else {
-                    jObj = (JsonObject) gson.toJsonTree(chatMessageContent);
-                    jObj.remove("threadIds");
-                }
-
-
-                if (creatorCoreUserId > 0) {
-                    jObj.addProperty("creatorCoreUserId", creatorCoreUserId);
-                }
-                if (partnerCoreUserId > 0) {
-                    jObj.addProperty("partnerCoreUserId", partnerCoreUserId);
-                }
-                if (partnerCoreContactId > 0) {
-                    jObj.addProperty("partnerCoreContactId", partnerCoreContactId);
-                }
-
-                jObj.remove("lastMessageId");
-                jObj.remove("firstMessageId");
-
-                ChatMessage chatMessage = new ChatMessage();
-                chatMessage.setContent(jObj.toString());
-                chatMessage.setType(ChatMessageType.GET_THREADS);
-                chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
-                chatMessage.setToken(config.getToken());
-                chatMessage.setUniqueId(uniqueId);
-
-                JsonObject jsonObject = (JsonObject) gson.toJsonTree(chatMessage);
-
-                if (!Util.isNullOrEmpty(typeCode)) {
-                    jsonObject.remove("typeCode");
-                    jsonObject.addProperty("typeCode", typeCode);
-                } else if (!Util.isNullOrEmpty(config.getTypeCode())) {
-                    jsonObject.remove("typeCode");
-                    jsonObject.addProperty("typeCode", config.getTypeCode());
-                } else {
-                    jsonObject.remove("typeCode");
-                }
-
-                sendAsyncMessage(jsonObject.toString(), "Get thread send");
-
-            } else {
-                getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, uniqueId);
-            }
-
-        } catch (Throwable e) {
-            showErrorLog(e.getCause().getMessage());
-        }
-        return uniqueId;
-    }
-
-
-    public String getThreads(RequestThread requestThread) {
-        ArrayList<Integer> threadIds = requestThread.getThreadIds();
-        long offset = requestThread.getOffset();
-        long creatorCoreUserId = requestThread.getCreatorCoreUserId();
-        long partnerCoreContactId = requestThread.getPartnerCoreContactId();
-        long partnerCoreUserId = requestThread.getPartnerCoreUserId();
-        String threadName = requestThread.getThreadName();
-        long count = requestThread.getCount();
-        String typeCode = config.getTypeCode();
-        return getThreads((int) count, offset, threadIds, threadName, creatorCoreUserId, partnerCoreUserId
-                , partnerCoreContactId, typeCode);
     }
 
     /**
@@ -2477,7 +2319,7 @@ public class Chat implements AsyncListener {
                 chatMessage.setType(ChatMessageType.EDIT_MESSAGE);
                 chatMessage.setToken(config.getToken());
                 chatMessage.setUniqueId(uniqueId);
-                chatMessage.setSubjectId(messageId);
+                chatMessage.setSubjectId((long) messageId);
                 chatMessage.setContent(messageContent);
                 chatMessage.setSystemMetadata(systemMetaData);
                 chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
@@ -4211,7 +4053,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount());
+            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnSeenMessageList(content, chatResponse);
@@ -4309,8 +4151,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount());
-            resultParticipant.setContentCount(chatMessage.getContentCount());
+            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnDeliveredMessageList(content, chatResponse);
@@ -4765,26 +4606,11 @@ public class Chat implements AsyncListener {
 
         ResultParticipant resultParticipant = new ResultParticipant();
 
-        resultParticipant.setContentCount(chatMessage.getContentCount());
+        resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
 
         resultParticipant.setParticipants(participants);
         outPutParticipant.setResult(resultParticipant);
         return outPutParticipant;
-    }
-
-    private void sendAsyncMessage(String asyncContent, String logMessage) {
-        if (state == ChatState.ChatReady) {
-            showInfoLog(logMessage, asyncContent);
-            try {
-                async.sendMessage(asyncContent, AsyncMessageType.Message, null);
-            } catch (Exception e) {
-                showErrorLog(e.getMessage());
-                return;
-            }
-            pingWithDelay();
-        } else {
-            getErrorOutPut(ChatConstant.ERROR_CHAT_READY, ChatConstant.ERROR_CODE_CHAT_READY, null);
-        }
     }
 
     private ChatMessage getChatMessage(String contentThreadChat, String uniqueId, String typeCode) {
@@ -4878,7 +4704,8 @@ public class Chat implements AsyncListener {
 
         ResultThreads resultThreads = new ResultThreads();
         resultThreads.setThreads(conversations);
-        resultThreads.setContentCount(chatMessage.getContentCount());
+        long contentCount = chatMessage.getContentCount() == null ? 0 : chatMessage.getContentCount();
+        resultThreads.setContentCount(contentCount);
         outPutThreads.setErrorCode(0);
         outPutThreads.setErrorMessage("");
         outPutThreads.setHasError(false);
@@ -5048,4 +4875,22 @@ public class Chat implements AsyncListener {
         void onSentResult(String content);
 
     }
+
+    public void getThreads(GetThreadRequest requestThread) {
+        sendAsyncMessage2(requestThread);
+    }
+
+    private void sendAsyncMessage2(BaseRequest request) {
+        if (state == ChatState.ChatReady) {
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setToken(config.getToken());
+            chatMessage.setUniqueId(request.getUniqueId());
+            chatMessage.setType(request.getMessageType());
+            chatMessage.setContent(request.getChatMessageContent());
+            chatMessage.setSubjectId(request.getSubjectId());
+            chatMessage.setTypeCode(config.getTypeCode());
+            async.sendMessage(gson.toJson(chatMessage), Message, null);
+        }
+    }
+
 }

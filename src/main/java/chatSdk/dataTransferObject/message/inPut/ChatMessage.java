@@ -5,18 +5,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class ChatMessage {
     private String token;
     private String typeCode;
-    private String tokenIssuer;
-    private int type;
+    private String tokenIssuer = "1";
+    private Integer type;
     private Integer messageType;
-    private long subjectId;
+    private Long subjectId;
     private String uniqueId;
     private String content;
-    private int contentCount;
+    private Long contentCount;
     private String systemMetadata;
     private String metadata;
-    private long repliedTo;
+    private Long repliedTo;
 }
