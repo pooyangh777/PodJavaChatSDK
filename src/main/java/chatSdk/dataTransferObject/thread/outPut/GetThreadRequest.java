@@ -19,7 +19,7 @@ public class GetThreadRequest extends BaseRequest {
     private Boolean isGroup;
 
     public GetThreadRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.GET_THREADS);
+        super(builder.uniqueId, builder.subjectId, ChatMessageType.GET_THREADS);
         this.count = builder.count;
         this.offset = builder.offset;
         this.name = builder.name;
@@ -40,6 +40,7 @@ public class GetThreadRequest extends BaseRequest {
     }
 
     public static class Builder {
+        private Long subjectId;
         private String uniqueId;
         private Integer count = 25;
         private Integer offset = 0;
@@ -52,6 +53,16 @@ public class GetThreadRequest extends BaseRequest {
         private Integer partnerCoreContactId;
         private String metadataCriteria;
         private Boolean isGroup;
+
+        public Long getSubjectId() {
+            return subjectId;
+        }
+
+        public Builder setSubjectId(Long subjectId) {
+            this.subjectId = subjectId;
+            return this;
+        }
+
 
         public Integer getCount() {
             return count;

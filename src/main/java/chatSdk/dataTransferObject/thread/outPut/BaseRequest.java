@@ -1,5 +1,6 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
+import chatSdk.dataTransferObject.message.outPut.Exclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,13 @@ import java.util.UUID;
 @Setter
 public abstract class BaseRequest {
     String uniqueId;
+    @Exclude
     Long subjectId;
-    int messageType;
+    int chatMessageType;
 
     public BaseRequest(String uniqueId, int messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;
-        this.messageType = messageType;
+        this.chatMessageType = messageType;
     }
 
     public BaseRequest(String uniqueId) {
@@ -24,7 +26,7 @@ public abstract class BaseRequest {
     public BaseRequest(String uniqueId, Long subjectId, int messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;
         this.subjectId = subjectId;
-        this.messageType = messageType;
+        this.chatMessageType = messageType;
     }
 
     private String generateUniqueId() {

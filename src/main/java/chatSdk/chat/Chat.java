@@ -4880,17 +4880,26 @@ public class Chat implements AsyncListener {
         sendAsyncMessage2(requestThread);
     }
 
+    public void getHistory2(GetHistoryRequest request) {
+        sendAsyncMessage2(request);
+    }
+    public void sendTextMessage2(SendMessageRequest request)
+    {
+        sendAsyncMessage2(request);
+    }
+
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setToken(config.getToken());
             chatMessage.setUniqueId(request.getUniqueId());
-            chatMessage.setType(request.getMessageType());
+            chatMessage.setType(request.getChatMessageType());
             chatMessage.setContent(request.getChatMessageContent());
             chatMessage.setSubjectId(request.getSubjectId());
             chatMessage.setTypeCode(config.getTypeCode());
+            chatMessage.setMessageType(1);
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
     }
-
 }

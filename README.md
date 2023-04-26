@@ -16,51 +16,28 @@ Fanap's POD Chat Service - JAVA SDK
 ## How to use?
 
 ```swift
-@Builder
-@Getter
-@Setter
-AsyncConfig {
-    boolean isSocketProvider;
-    String token;
-    String serverName;
-    String ssoHost;
-    String queueServer;
-    String queuePort;
-    String queueInput;
-    String queueOutput;
-    String queueUserName;
-    String queuePassword;
-    int queueReconnectTime;
-    String socketAddress;
-    boolean isLoggable;
-    String appId;
-
-
-@Builder
-@Getter
-@Setter
-ChatConfig {
-    AsyncConfig asyncConfig;
-    String severName;
-    String token;
-    String ssoHost;
-    String platformHost;
-    String fileServer;
-    Long chatId;
-    String typeCode = "default";
-    long ttl;
-    boolean isLoggable = false;
-}
-
-  public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
-        if (instance == null) {
-            async = Async.getInstance(chatConfig.getAsyncConfig());
-            instance = new Chat(chatConfig, listener);
-            gson = new Gson();
-        }
-        return instance;
-    }
-```
-
-
-
+ AsyncConfig asyncConfig = AsyncConfig
+                .builder()
+                .isSocketProvider(isSocket)
+                .socketAddress(socketAddress)
+                .serverName(serverName)
+                .queuePassword(queuePassword)
+                .queueUserName(queueUserName)
+                .queueInput(queueInput)
+                .queueOutput(queueOutput)
+                .queueServer(queueServer)
+                .queuePort(queuePort)
+                .isLoggable(true)
+                .appId("PodChat")
+                .build();
+        ChatConfig chatConfig = ChatConfig.builder()
+                .asyncConfig(asyncConfig)
+                .severName(serverName)
+                .token("ac08a5eb74d34daf88cbe732ddbdcf8c.XzIwMjM0")
+                .chatId(chatId)
+                .fileServer(fileServer)
+                .ssoHost(ssoHost)
+                .platformHost(platformHost)
+                .isLoggable(true)
+                .build();
+ ```
