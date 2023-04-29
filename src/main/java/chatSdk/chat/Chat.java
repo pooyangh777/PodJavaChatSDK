@@ -4876,16 +4876,19 @@ public class Chat implements AsyncListener {
 
     }
 
-    public void getThreads(GetThreadRequest requestThread) {
+    public String getThreads(GetThreadRequest requestThread) {
         sendAsyncMessage2(requestThread);
+        return requestThread.getUniqueId();
     }
 
-    public void getHistory2(GetHistoryRequest request) {
+    public String getHistory2(GetHistoryRequest request) {
         sendAsyncMessage2(request);
+        return request.getUniqueId();
     }
-    public void sendTextMessage2(SendMessageRequest request)
-    {
+
+    public String sendTextMessage2(SendMessageRequest request) {
         sendAsyncMessage2(request);
+        return request.getUniqueId();
     }
 
 
