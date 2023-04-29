@@ -1,5 +1,6 @@
 package chatSdk.dataTransferObject.message.inPut;
 
+import chatSdk.dataTransferObject.thread.inPut.Conversation;
 import chatSdk.dataTransferObject.thread.inPut.ForwardInfo;
 import chatSdk.dataTransferObject.thread.inPut.ReplyInfoVO;
 import chatSdk.dataTransferObject.thread.inPut.Participant;
@@ -14,7 +15,7 @@ public class MessageVO {
     private boolean editable;
     private boolean deletable;
     private Participant participant;
-    private java.lang.Thread thread;
+    private Conversation conversation;
     private Long time;
     private Integer timeNanos;
     private Boolean delivered;
@@ -97,12 +98,12 @@ public class MessageVO {
         this.participant = participant;
     }
 
-    public java.lang.Thread getThread() {
-        return thread;
+    public Conversation getConversation() {
+        return conversation;
     }
 
-    public void setThread(java.lang.Thread thread) {
-        this.thread = thread;
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 
     public Long getTime() {
