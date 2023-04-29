@@ -8,32 +8,32 @@ import java.util.List;
 public class ResultHistory {
 
     private List<MessageVO> history;
-    private long contentCount;
-    private boolean hasNext;
-    private long nextOffset;
+    private Long contentCount;
+    private Boolean hasNext;
+    private Long nextOffset;
 
 
-    public long getContentCount() {
+    public Long getContentCount() {
         return contentCount;
     }
 
-    public void setContentCount(long contentCount) {
+    public void setContentCount(Long contentCount) {
         this.contentCount = contentCount;
     }
 
-    public boolean isHasNext() {
+    public Boolean isHasNext() {
         return hasNext;
     }
 
-    public void setHasNext(boolean hasNext) {
+    public void setHasNext(Boolean hasNext) {
         this.hasNext = hasNext;
     }
 
-    public long getNextOffset() {
+    public Long getNextOffset() {
         return nextOffset;
     }
 
-    public void setNextOffset(long nextOffset) {
+    public void setNextOffset(Long nextOffset) {
         this.nextOffset = nextOffset;
     }
 

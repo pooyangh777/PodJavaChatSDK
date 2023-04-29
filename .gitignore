@@ -17,6 +17,7 @@ JavaChatSDK/target/
 .idea
 .target
 **/.target
+target/
 
 ### Eclipse ###
 .apt_generated
