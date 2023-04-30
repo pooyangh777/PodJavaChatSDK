@@ -29,6 +29,11 @@ public abstract class BaseRequest {
         this.chatMessageType = messageType;
     }
 
+    public BaseRequest(String uniqueId, Long subjectId) {
+        this.uniqueId = uniqueId;
+        this.subjectId = subjectId;
+    }
+
     private String generateUniqueId() {
         return UUID.randomUUID().toString();
     }

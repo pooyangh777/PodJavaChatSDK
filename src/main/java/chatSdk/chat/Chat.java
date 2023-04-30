@@ -4891,6 +4891,40 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
+    public String muteThread2(MuteThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String unMuteThread2(UnMuteThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String pinThread2(PinThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String unPinThread2(UnPinThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String getThreadParticipants2(ThreadParticipantRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String getUserInfo2(GetUserInfoRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String editMessage2(EditMessageRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
 
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
