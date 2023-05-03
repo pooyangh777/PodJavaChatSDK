@@ -3,6 +3,7 @@ package chatSdk.chat;
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
 import asyncSdk.model.AsyncMessage;
+import chatSdk.dataTransferObject.GeneralRequest;
 import chatSdk.dataTransferObject.chat.*;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
 import chatSdk.dataTransferObject.system.inPut.Error;
@@ -4891,22 +4892,22 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String muteThread2(MuteThreadRequest request) {
+    public String muteThread2(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
-    public String unMuteThread2(UnMuteThreadRequest request) {
+    public String unMuteThread2(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
-    public String pinThread2(PinThreadRequest request) {
+    public String pinThread2(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
-    public String unPinThread2(UnPinThreadRequest request) {
+    public String unPinThread2(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
@@ -4916,7 +4917,7 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String getUserInfo2(GetUserInfoRequest request) {
+    public String getUserInfo2(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
@@ -4926,16 +4927,21 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
+    public String addAdmin2(SetAdminRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setToken(config.getToken());
             chatMessage.setUniqueId(request.getUniqueId());
-            chatMessage.setType(request.getChatMessageType());
+            chatMessage.setType(request.getChatMessageType());// ping , getThread , getHistory , ...
             chatMessage.setContent(request.getChatMessageContent());
             chatMessage.setSubjectId(request.getSubjectId());
             chatMessage.setTypeCode(config.getTypeCode());
-            chatMessage.setMessageType(1);
+            chatMessage.setMessageType(1); // video , text , picture , ...
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
     }

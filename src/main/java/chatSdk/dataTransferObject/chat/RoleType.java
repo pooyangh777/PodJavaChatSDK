@@ -13,5 +13,5 @@ public class RoleType {
     public static final String READ_THREAD = "read_thread";
     public static final String EDIT_THREAD = "edit_thread";
     public static final String THREAD_ADMIN = "thread_admin";
-
+    public static final String OWNERSHIP = "ownership";
 }

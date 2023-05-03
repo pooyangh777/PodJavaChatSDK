@@ -1,21 +1,29 @@
-package chatSdk.dataTransferObject;
+package chatSdk.dataTransferObject.system.outPut;
 
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
+import com.google.gson.Gson;
 
-public class GeneralRequest extends BaseRequest {
-    public GeneralRequest(Builder builder) {
+import java.util.ArrayList;
+
+public class SetAdminRequest extends BaseRequest {
+    private ArrayList<String> roles;
+
+    public SetAdminRequest(Builder builder) {
         super(builder.uniqueId, builder.subjectId, builder.messageType);
+        this.roles = builder.roles;
     }
 
     @Override
     public String getChatMessageContent() {
-        return null;
+        Gson gson = new Gson();
+        return gson.toJson(roles);
     }
 
     public static class Builder {
         String uniqueId;
         Long subjectId;
         int messageType;
+        ArrayList<String> roles;
 
         public String getUniqueId() {
             return uniqueId;
@@ -44,8 +52,17 @@ public class GeneralRequest extends BaseRequest {
             return this;
         }
 
-        public GeneralRequest build() {
-            return new GeneralRequest(this);
+        public ArrayList<String> getRoles() {
+            return roles;
+        }
+
+        public Builder setRoles(ArrayList<String> roles) {
+            this.roles = roles;
+            return this;
+        }
+
+        public SetAdminRequest build() {
+            return new SetAdminRequest(this);
         }
     }
 }
