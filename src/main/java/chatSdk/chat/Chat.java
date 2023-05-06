@@ -4948,6 +4948,11 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
+    public String addParticipants2(AddParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
