@@ -4232,10 +4232,11 @@ public class Chat implements AsyncListener {
     private void handleOutPutDeleteMsg(ChatMessage chatMessage) {
         ChatResponse<ResultDeleteMessage> chatResponse = new ChatResponse<>();
         chatResponse.setUniqueId(chatMessage.getUniqueId());
-        long messageId = Long.parseLong(chatMessage.getContent());
+        MessageVO messageVO = gson.fromJson(chatMessage.getContent(), MessageVO.class);
+//        long messageId = Long.parseLong(chatMessage.getContent());
         ResultDeleteMessage resultDeleteMessage = new ResultDeleteMessage();
         DeleteMessageContent deleteMessage = new DeleteMessageContent();
-        deleteMessage.setId(messageId);
+        deleteMessage.setId(messageVO.getId());
         resultDeleteMessage.setDeletedMessage(deleteMessage);
         chatResponse.setResult(resultDeleteMessage);
         String jsonDeleteMsg = gson.toJson(chatResponse);
