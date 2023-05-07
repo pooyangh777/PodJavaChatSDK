@@ -4953,8 +4953,7 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String removeParticipants2(RemoveParticipantsRequest request)
-    {
+    public String closeThread(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
