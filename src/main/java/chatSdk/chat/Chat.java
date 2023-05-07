@@ -4953,13 +4953,17 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String removeParticipants2(RemoveParticipantsRequest request)
-    {
+    public String removeParticipants2(RemoveParticipantsRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
     public String closeThread(GeneralRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String leaveThread2(LeaveThreadRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
@@ -4972,8 +4976,8 @@ public class Chat implements AsyncListener {
             chatMessage.setType(request.getChatMessageType());// ping , getThread , getHistory , ...
             chatMessage.setContent(request.getChatMessageContent());
             chatMessage.setSubjectId(request.getSubjectId());
-            chatMessage.setTypeCode(config.getTypeCode());
-            chatMessage.setMessageType(1); // video , text , picture , ...
+            chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but not correct complete
+            chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
     }
