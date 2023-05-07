@@ -4054,7 +4054,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+            resultParticipant.setContentCount(chatMessage.getContentCount());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnSeenMessageList(content, chatResponse);
@@ -4152,7 +4152,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+            resultParticipant.setContentCount(chatMessage.getContentCount());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnDeliveredMessageList(content, chatResponse);
@@ -4608,7 +4608,7 @@ public class Chat implements AsyncListener {
 
         ResultParticipant resultParticipant = new ResultParticipant();
 
-        resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+        resultParticipant.setContentCount(chatMessage.getContentCount());
 
         resultParticipant.setParticipants(participants);
         outPutParticipant.setResult(resultParticipant);
@@ -4949,6 +4949,12 @@ public class Chat implements AsyncListener {
     }
 
     public String addParticipants2(AddParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String removeParticipants2(RemoveParticipantsRequest request)
+    {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
