@@ -3,17 +3,13 @@ package chatSdk.dataTransferObject.message.outPut;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class ForwardMessageRequest extends BaseRequest {
     private long threadId;
-    @Expose
     private final ArrayList<Long> messageIds;
-    @Expose
     private ArrayList<String> uniqueIds;
 
     public ForwardMessageRequest(Builder builder) {
@@ -26,13 +22,14 @@ public class ForwardMessageRequest extends BaseRequest {
             for (int i = 0; i < messageIds.size(); i++) {
                 uniqueIds.add(UUID.randomUUID().toString());
             }
+            uniqueId = new Gson().toJson(uniqueIds);
         }
     }
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
+        Gson gson = new Gson();
+        return gson.toJson(messageIds);
     }
 
     public static class Builder {
