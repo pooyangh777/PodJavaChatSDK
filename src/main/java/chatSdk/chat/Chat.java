@@ -4968,8 +4968,12 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String pinMessage(PinMessageRequest request)
-    {
+    public String pinMessage(PinMessageRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String deliveredMessageList(DeliveredMessageListRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
