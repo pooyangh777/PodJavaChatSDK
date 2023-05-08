@@ -81,4 +81,24 @@ public class ForwardMessageRequest extends BaseRequest {
             return new ForwardMessageRequest(this);
         }
     }
+
+//    {
+//        "peerName": "chat-server",
+//            "priority": 1,
+//            "content": {
+//        "type": 22,
+//                "token": "e1ef9b7839bc4dfd8c07dc68b99a326e.XzIwMjM1",
+//                "tokenIssuer": 1,
+//                "typeCode": "default",
+//                "subjectId": 4049730,
+//                "content": [
+//                730629758,
+//                730708651],
+//        "uniqueId": [
+//                 "17ded9b1-6a49-40d1-abd9-917ec7ef2590",
+//                 "22c05849-c87f-453b-bb76-cf66cafc386c"]
+//    },
+//            "ttl": 10000,
+//            "messageId": 39
+//    }
 }
