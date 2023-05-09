@@ -3,27 +3,26 @@ package chatSdk.dataTransferObject.message.outPut;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
 import com.google.gson.Gson;
-import lombok.Getter;
 
-@Getter
-public class DeliveryMessageRequest extends BaseRequest {
-    private String messageId;
-    private long threadId;
+public class SeenMessageRequest extends BaseRequest {
+    private long messageId;
+    private long ownerId;
 
-    public DeliveryMessageRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.DELIVERY);
-        this.messageId = String.format("%d", builder.messageId);
-        this.subjectId = builder.threadId;
+    public SeenMessageRequest(Builder builder) {
+        super(builder.uniqueId, ChatMessageType.SEEN);
+        this.messageId = builder.messageId;
+        this.ownerId = builder.ownerId;
     }
 
     @Override
     public String getChatMessageContent() {
-        return messageId;
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     public static class Builder {
         private long messageId;
-        private long threadId;
+        private long ownerId;
         private String uniqueId;
 
         public long getMessageId() {
@@ -35,12 +34,12 @@ public class DeliveryMessageRequest extends BaseRequest {
             return this;
         }
 
-        public long getThreadId() {
-            return threadId;
+        public long getOwnerId() {
+            return ownerId;
         }
 
-        public Builder setThreadId(long threadId) {
-            this.threadId = threadId;
+        public Builder setOwnerId(long ownerId) {
+            this.ownerId = ownerId;
             return this;
         }
 
@@ -53,8 +52,8 @@ public class DeliveryMessageRequest extends BaseRequest {
             return this;
         }
 
-        public DeliveryMessageRequest build() {
-            return new DeliveryMessageRequest(this);
+        public SeenMessageRequest build() {
+            return new SeenMessageRequest(this);
         }
     }
 }

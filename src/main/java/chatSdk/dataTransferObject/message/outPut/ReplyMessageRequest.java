@@ -8,10 +8,9 @@ import lombok.Getter;
 @Getter
 public class ReplyMessageRequest extends BaseRequest {
     private Long threadId;
-    private Long repliedTo;
-    private String textMessage;
-
-    private String systemMetaData;
+    private final Long repliedTo;
+    private final String textMessage;
+    private final String systemMetaData;
 
     public ReplyMessageRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.MESSAGE);

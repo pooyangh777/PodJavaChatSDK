@@ -4998,6 +4998,11 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
+    public String seenMessage(SeenMessageRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
@@ -5008,6 +5013,7 @@ public class Chat implements AsyncListener {
             chatMessage.setSubjectId(request.getSubjectId());
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but not correct complete
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
+            chatMessage.setRepliedTo(request.getRepliedTo());
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
     }

@@ -16,6 +16,8 @@ public abstract class BaseRequest {
 
     @Exclude
     protected int chatMessageType;
+    @Exclude
+    protected Long repliedTo;
 
     public BaseRequest(String uniqueId, int messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;
@@ -42,4 +44,12 @@ public abstract class BaseRequest {
     }
 
     public abstract String getChatMessageContent();
+
+    public Long getRepliedTo() {
+        return repliedTo;
+    }
+
+    public void setRepliedTo(Long repliedTo) {
+        this.repliedTo = repliedTo;
+    }
 }
