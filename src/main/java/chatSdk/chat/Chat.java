@@ -5008,7 +5008,7 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String unReadMessageCount2(UnReadMessageCountRequest request) {
+    public String unReadMessageCount2(AllUnReadMessageCountRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }

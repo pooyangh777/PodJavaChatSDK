@@ -12,11 +12,8 @@ import java.util.UUID;
 
 @Getter
 public class DeleteMessageRequest extends BaseRequest {
-    @Expose
     private ArrayList<Long> ids;
-    @Expose
     private boolean deleteForAll;
-    @Expose
     private ArrayList<String> uniqueIds;
 
     public DeleteMessageRequest(Builder builder) {
@@ -34,7 +31,6 @@ public class DeleteMessageRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(this);
     }
 

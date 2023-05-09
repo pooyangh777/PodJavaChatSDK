@@ -17,7 +17,6 @@ public class LeaveThreadRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(clearHistory);
     }
 

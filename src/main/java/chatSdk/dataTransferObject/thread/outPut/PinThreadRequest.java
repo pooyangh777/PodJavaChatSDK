@@ -37,7 +37,6 @@ public class PinThreadRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(this);
     }
 

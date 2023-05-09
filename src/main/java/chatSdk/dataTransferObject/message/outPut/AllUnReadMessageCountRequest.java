@@ -3,18 +3,19 @@ package chatSdk.dataTransferObject.message.outPut;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
 import com.google.gson.Gson;
+import lombok.Getter;
 
-public class UnReadMessageCountRequest extends BaseRequest {
+@Getter
+public class AllUnReadMessageCountRequest extends BaseRequest {
     private Boolean mute;
 
-    public UnReadMessageCountRequest(Builder builder) {
+    public AllUnReadMessageCountRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.ALL_UNREAD_MESSAGE_COUNT);
         this.mute = builder.countMutedThreads;
     }
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(this);
     }
 
@@ -40,8 +41,8 @@ public class UnReadMessageCountRequest extends BaseRequest {
             return this;
         }
 
-        public UnReadMessageCountRequest build() {
-            return new UnReadMessageCountRequest(this);
+        public AllUnReadMessageCountRequest build() {
+            return new AllUnReadMessageCountRequest(this);
         }
     }
 }
