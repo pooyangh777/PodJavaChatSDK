@@ -1,0 +1,47 @@
+package chatSdk.dataTransferObject.message.outPut;
+
+import chatSdk.dataTransferObject.chat.ChatMessageType;
+import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
+import com.google.gson.Gson;
+
+public class UnReadMessageCountRequest extends BaseRequest {
+    private Boolean mute;
+
+    public UnReadMessageCountRequest(Builder builder) {
+        super(builder.uniqueId, ChatMessageType.ALL_UNREAD_MESSAGE_COUNT);
+        this.mute = builder.countMutedThreads;
+    }
+
+    @Override
+    public String getChatMessageContent() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static class Builder {
+        private Boolean countMutedThreads;
+        private String uniqueId;
+
+        public Boolean getCountMutedThreads() {
+            return countMutedThreads;
+        }
+
+        public Builder setCountMutedThreads(Boolean countMutedThreads) {
+            this.countMutedThreads = countMutedThreads;
+            return this;
+        }
+
+        public String getUniqueId() {
+            return uniqueId;
+        }
+
+        public Builder setUniqueId(String uniqueId) {
+            this.uniqueId = uniqueId;
+            return this;
+        }
+
+        public UnReadMessageCountRequest build() {
+            return new UnReadMessageCountRequest(this);
+        }
+    }
+}
