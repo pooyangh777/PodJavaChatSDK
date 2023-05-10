@@ -2,11 +2,14 @@ package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 
 @Getter
 public class LeaveThreadRequest extends BaseRequest {
     private Long threadId;
+    @Expose
     private final Boolean clearHistory;
 
     public LeaveThreadRequest(Builder builder) {
@@ -17,8 +20,8 @@ public class LeaveThreadRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
-        return gson.toJson(clearHistory);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     public static class Builder {
