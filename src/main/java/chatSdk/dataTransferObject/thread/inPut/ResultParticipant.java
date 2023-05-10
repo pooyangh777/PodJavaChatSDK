@@ -5,9 +5,9 @@ import java.util.List;
 public class ResultParticipant {
 
     private List<Participant> participants;
-    private boolean hasNext;
-    private long nextOffset;
-    private int contentCount;
+    private Boolean hasNext;
+    private Long nextOffset;
+    private Long contentCount;
 
     public boolean isHasNext() {
         return hasNext;
@@ -33,11 +33,11 @@ public class ResultParticipant {
         this.participants = participants;
     }
 
-    public int getContentCount() {
+    public Long getContentCount() {
         return contentCount;
     }
 
-    public void setContentCount(int contentCount) {
+    public void setContentCount(Long contentCount) {
         this.contentCount = contentCount;
     }
 }

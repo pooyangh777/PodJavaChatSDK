@@ -4054,7 +4054,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+            resultParticipant.setContentCount(chatMessage.getContentCount());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnSeenMessageList(content, chatResponse);
@@ -4152,7 +4152,7 @@ public class Chat implements AsyncListener {
             List<Participant> participants = gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Participant>>() {
             }.getType());
             resultParticipant.setParticipants(participants);
-            resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+            resultParticipant.setContentCount(chatMessage.getContentCount());
             chatResponse.setResult(resultParticipant);
             String content = gson.toJson(chatResponse);
             listener.OnDeliveredMessageList(content, chatResponse);
@@ -4232,10 +4232,11 @@ public class Chat implements AsyncListener {
     private void handleOutPutDeleteMsg(ChatMessage chatMessage) {
         ChatResponse<ResultDeleteMessage> chatResponse = new ChatResponse<>();
         chatResponse.setUniqueId(chatMessage.getUniqueId());
-        long messageId = Long.parseLong(chatMessage.getContent());
+        MessageVO messageVO = gson.fromJson(chatMessage.getContent(), MessageVO.class);
+//        long messageId = Long.parseLong(chatMessage.getContent());
         ResultDeleteMessage resultDeleteMessage = new ResultDeleteMessage();
         DeleteMessageContent deleteMessage = new DeleteMessageContent();
-        deleteMessage.setId(messageId);
+        deleteMessage.setId(messageVO.getId());
         resultDeleteMessage.setDeletedMessage(deleteMessage);
         chatResponse.setResult(resultDeleteMessage);
         String jsonDeleteMsg = gson.toJson(chatResponse);
@@ -4607,7 +4608,7 @@ public class Chat implements AsyncListener {
 
         ResultParticipant resultParticipant = new ResultParticipant();
 
-        resultParticipant.setContentCount(chatMessage.getContentCount().intValue());
+        resultParticipant.setContentCount(chatMessage.getContentCount());
 
         resultParticipant.setParticipants(participants);
         outPutParticipant.setResult(resultParticipant);
@@ -4942,6 +4943,37 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
+    public String deleteMessage2(DeleteMessageRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String addParticipants2(AddParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String removeParticipants2(RemoveParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String closeThread(GeneralRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String leaveThread2(LeaveThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String pinMessage(PinMessageRequest request)
+    {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
@@ -4950,8 +4982,8 @@ public class Chat implements AsyncListener {
             chatMessage.setType(request.getChatMessageType());// ping , getThread , getHistory , ...
             chatMessage.setContent(request.getChatMessageContent());
             chatMessage.setSubjectId(request.getSubjectId());
-            chatMessage.setTypeCode(config.getTypeCode());
-            chatMessage.setMessageType(1); // video , text , picture , ...
+            chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but not correct complete
+            chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
     }

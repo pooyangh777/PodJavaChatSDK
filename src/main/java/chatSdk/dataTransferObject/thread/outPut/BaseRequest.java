@@ -9,10 +9,13 @@ import java.util.UUID;
 @Getter
 @Setter
 public abstract class BaseRequest {
-    String uniqueId;
     @Exclude
-    Long subjectId;
-    int chatMessageType;
+    protected String uniqueId;
+    @Exclude
+    protected Long subjectId;
+
+    @Exclude
+    protected int chatMessageType;
 
     public BaseRequest(String uniqueId, int messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;

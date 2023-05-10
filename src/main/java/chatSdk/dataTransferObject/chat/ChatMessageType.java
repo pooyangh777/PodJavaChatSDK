@@ -44,6 +44,9 @@ public class ChatMessageType {
     public static final int SIGNAL_MESSAGE = 45;
     public static final int PIN_THREAD = 48;
     public static final int UNPIN_THREAD = 49;
+    public static final int PIN_MESSAGE = 50;
+    public static final int UNPIN_MESSAGE = 51;
+    public static final int CLOSE_THREAD = 102;
     public static final int ERROR = 999;
 
 }
