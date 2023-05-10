@@ -15,7 +15,7 @@ public class BlockListRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        return null;
+        return gson.toJson(this);
     }
 
     public static class Builder {

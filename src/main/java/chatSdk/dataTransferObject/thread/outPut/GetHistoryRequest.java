@@ -62,7 +62,6 @@ public class GetHistoryRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(this);
     }
 
@@ -70,8 +69,8 @@ public class GetHistoryRequest extends BaseRequest {
         private String uniqueId;
         private Long subjectId;
         private Long threadId;
-        private Integer offset;
-        private Integer count;
+        private Integer offset = 0;
+        private Integer count = 25;
         private Integer fromTime;
         private Integer fromTimeNanos;
         private Integer messageId;

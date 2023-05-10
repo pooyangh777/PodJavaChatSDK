@@ -8,8 +8,8 @@ import com.google.gson.annotations.Expose;
 
 public class PinMessageRequest extends BaseRequest {
 
+    @Exclude
     public Long messageId;
-    @Expose
     public Boolean notifyAll;
 
     public PinMessageRequest(Builder builder) {
@@ -20,7 +20,6 @@ public class PinMessageRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(this);
     }
 
