@@ -15,7 +15,6 @@ public class SetAdminRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(roles);
     }
 

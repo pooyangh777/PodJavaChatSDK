@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 public class LeaveThreadRequest extends BaseRequest {
     private Long threadId;
-    @Expose
     private final Boolean clearHistory;
 
     public LeaveThreadRequest(Builder builder) {
@@ -20,7 +19,6 @@ public class LeaveThreadRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(this);
     }
 
