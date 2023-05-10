@@ -6,19 +6,20 @@ import com.google.gson.Gson;
 import lombok.Getter;
 
 @Getter
-public class BlockRequest extends BaseRequest{
-    private long contactId;
-    private long userId;
+public class BlockRequest extends BaseRequest {
+    private Long contactId;
+    private Long userId;
+    private Long threadId;
 
     public BlockRequest(Builder builder) {
-        super(builder.uniqueId, builder.subjectId, ChatMessageType.BLOCK);
+        super(builder.uniqueId, ChatMessageType.BLOCK);
         this.contactId = builder.contactId;
         this.userId = builder.userId;
+        this.threadId = builder.threadId;
     }
 
     @Override
     public String getChatMessageContent() {
-        Gson gson = new Gson();
         return gson.toJson(this);
     }
 
@@ -26,7 +27,7 @@ public class BlockRequest extends BaseRequest{
         private Long contactId;
         private Long userId;
         private String uniqueId;
-        private Long subjectId;
+        private Long threadId;
 
         public Long getContactId() {
             return contactId;
@@ -41,7 +42,7 @@ public class BlockRequest extends BaseRequest{
         }
 
         public Long getSubjectId() {
-            return subjectId;
+            return threadId;
         }
 
         public Builder setContactId(Long contactId) {
@@ -59,8 +60,8 @@ public class BlockRequest extends BaseRequest{
             return this;
         }
 
-        public Builder setSubjectId(Long subjectId) {
-            this.subjectId = subjectId;
+        public Builder setSubjectId(Long threadId) {
+            this.threadId = threadId;
             return this;
         }
 
