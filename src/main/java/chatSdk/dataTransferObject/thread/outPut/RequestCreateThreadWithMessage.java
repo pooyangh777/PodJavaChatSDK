@@ -1,7 +1,6 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.thread.inPut.Invitee;
-import chatSdk.mainmodel.RequestThreadInnerMessage;
 import chatSdk.dataTransferObject.BaseRequestObject;
 
 import java.util.List;

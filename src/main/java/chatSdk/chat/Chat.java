@@ -28,7 +28,6 @@ import chatSdk.dataTransferObject.thread.inPut.*;
 import chatSdk.dataTransferObject.thread.outPut.*;
 import chatSdk.dataTransferObject.user.inPut.*;
 import chatSdk.dataTransferObject.user.outPut.*;
-import chatSdk.mainmodel.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -5014,6 +5013,11 @@ public class Chat implements AsyncListener {
     }
 
     public String unReadMessageCount2(AllUnReadMessageCountRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String createThreadWithMessage2(CreateThreadWithMessageRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }

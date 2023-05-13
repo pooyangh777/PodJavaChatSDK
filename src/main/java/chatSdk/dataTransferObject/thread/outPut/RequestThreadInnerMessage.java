@@ -1,4 +1,4 @@
-package chatSdk.mainmodel;
+package chatSdk.dataTransferObject.thread.outPut;
 
 import java.util.List;
 
