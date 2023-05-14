@@ -1,9 +1,7 @@
 package chatSdk.dataTransferObject.chat;
 
 public class ChatMessageType {
-
     public static final int CREATE_THREAD = 1;
-    public static final int INVITATION = 1;
     public static final int MESSAGE = 2;
     public static final int SENT = 3;
     public static final int DELIVERY = 4;

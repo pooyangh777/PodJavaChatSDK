@@ -28,7 +28,6 @@ import chatSdk.dataTransferObject.thread.inPut.*;
 import chatSdk.dataTransferObject.thread.outPut.*;
 import chatSdk.dataTransferObject.user.inPut.*;
 import chatSdk.dataTransferObject.user.outPut.*;
-import chatSdk.mainmodel.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -181,7 +180,7 @@ public class Chat implements AsyncListener {
             case ChatMessageType.GET_BLOCKED:
             case ChatMessageType.ADD_PARTICIPANT:
             case ChatMessageType.GET_CONTACTS:
-            case ChatMessageType.INVITATION:
+            case ChatMessageType.CREATE_THREAD:
             case ChatMessageType.GET_HISTORY:
                 handleResponseMessage(chatMessage, messageUniqueId);
                 break;
@@ -1284,7 +1283,7 @@ public class Chat implements AsyncListener {
 
                 ChatMessage chatMessage = new ChatMessage();
                 chatMessage.setContent(jsonObjectCreateThread.toString());
-                chatMessage.setType(ChatMessageType.INVITATION);
+                chatMessage.setType(ChatMessageType.CREATE_THREAD);
                 chatMessage.setUniqueId(threadUniqueId);
                 chatMessage.setToken(config.getToken());
                 chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
@@ -3499,7 +3498,7 @@ public class Chat implements AsyncListener {
 
                 ChatMessage chatMessage = new ChatMessage();
                 chatMessage.setContent(jsonObjectCreateThread.toString());
-                chatMessage.setType(ChatMessageType.INVITATION);
+                chatMessage.setType(ChatMessageType.CREATE_THREAD);
                 chatMessage.setUniqueId(threadUniqueId);
                 chatMessage.setToken(config.getToken());
                 chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
@@ -3945,7 +3944,7 @@ public class Chat implements AsyncListener {
                 case ChatMessageType.UPDATE_THREAD_INFO:
                     handleUpdateThreadInfo(chatMessage);
                     break;
-                case ChatMessageType.INVITATION:
+                case ChatMessageType.CREATE_THREAD:
                     handleCreateThread(chatMessage);
                     break;
                 case ChatMessageType.MUTE_THREAD:
@@ -4619,7 +4618,7 @@ public class Chat implements AsyncListener {
         ChatMessage chatMessage = new ChatMessage();
 
         chatMessage.setContent(contentThreadChat);
-        chatMessage.setType(ChatMessageType.INVITATION);
+        chatMessage.setType(ChatMessageType.CREATE_THREAD);
         chatMessage.setToken(config.getToken());
         chatMessage.setUniqueId(uniqueId);
         chatMessage.setTokenIssuer(Integer.toString(TOKEN_ISSUER));
@@ -5019,6 +5018,11 @@ public class Chat implements AsyncListener {
     }
 
     public String createThread2(CreateThreadRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String createThreadWithMessage2(CreateThreadWithMessageRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
