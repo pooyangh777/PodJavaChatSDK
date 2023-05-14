@@ -1,22 +1,22 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
-import chatSdk.dataTransferObject.message.outPut.Exclude;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 public class ThreadInnerMessageRequest {
-    private String text;
-    @Exclude
-    private Integer type;
-    private String metadata;
-    private String systemMetadata;
-    private List<Long> forwardedMessageIds;
+    private final String text;
+    private final Integer messageType;
+    private final String metadata;
+    private final String systemMetadata;
+    private final List<Long> forwardedMessageIds;
     private String uniqueId;
 
     public ThreadInnerMessageRequest(Builder builder) {
         this.text = builder.text;
-        this.type = builder.type;
+        this.messageType = builder.messageType;
         this.metadata = builder.metadata;
         this.systemMetadata = builder.systemMetadata;
         this.forwardedMessageIds = builder.forwardedMessageIds;
@@ -27,7 +27,7 @@ public class ThreadInnerMessageRequest {
 
     public static class Builder {
         private String text;
-        private int type;
+        private Integer messageType;
         private String metadata;
         private String systemMetadata;
         private List<Long> forwardedMessageIds;
@@ -51,12 +51,12 @@ public class ThreadInnerMessageRequest {
             return this;
         }
 
-        public int getType() {
-            return type;
+        public Integer getMessageType() {
+            return messageType;
         }
 
-        public Builder setType(int type) {
-            this.type = type;
+        public Builder setMessageType(Integer messageType) {
+            this.messageType = messageType;
             return this;
         }
 

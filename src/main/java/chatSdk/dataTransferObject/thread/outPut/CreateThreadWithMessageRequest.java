@@ -15,6 +15,9 @@ public class CreateThreadWithMessageRequest extends BaseRequest {
     private final ThreadInnerMessageRequest message;
     private final String description;
     private final String image;
+    private final String metadata;
+    private final String uniqueName; // only for public thread
+
 
     public CreateThreadWithMessageRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.CREATE_THREAD);
@@ -25,6 +28,8 @@ public class CreateThreadWithMessageRequest extends BaseRequest {
         this.message = builder.message;
         this.description = builder.description;
         this.image = builder.image;
+        this.metadata = builder.metadata;
+        this.uniqueName = builder.uniqueName;
     }
 
     @Override
@@ -41,6 +46,8 @@ public class CreateThreadWithMessageRequest extends BaseRequest {
         private String description;
         private String image;
         private String uniqueId;
+        private String metadata;
+        private String uniqueName; // only for public thread
 
         public int getType() {
             return type;
@@ -111,6 +118,24 @@ public class CreateThreadWithMessageRequest extends BaseRequest {
 
         public Builder setUniqueId(String uniqueId) {
             this.uniqueId = uniqueId;
+            return this;
+        }
+
+        public String getMetadata() {
+            return metadata;
+        }
+
+        public Builder setMetadata(String metadata) {
+            this.metadata = metadata;
+            return this;
+        }
+
+        public String getUniqueName() {
+            return uniqueName;
+        }
+
+        public Builder setUniqueName(String uniqueName) {
+            this.uniqueName = uniqueName;
             return this;
         }
 
