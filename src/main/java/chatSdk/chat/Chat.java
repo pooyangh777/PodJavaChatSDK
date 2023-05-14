@@ -4942,7 +4942,7 @@ public class Chat implements AsyncListener {
         return request.getUniqueId();
     }
 
-    public String deleteMessage2(DeleteMessageRequest request) {
+    public String batchDeleteMessage2(BatchDeleteMessageRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
@@ -5028,6 +5028,11 @@ public class Chat implements AsyncListener {
     }
 
     public String getContacts2(GetContactsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String deleteMessage2(DeleteMessageRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
