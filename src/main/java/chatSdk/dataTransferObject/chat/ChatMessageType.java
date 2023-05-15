@@ -46,6 +46,7 @@ public class ChatMessageType {
     public static final int UNPIN_MESSAGE = 51;
     public static final int ALL_UNREAD_MESSAGE_COUNT = 61;
     public static final int CLOSE_THREAD = 102;
+    public static final int CREATE_TAG = 140;
     public static final int ERROR = 999;
 
 }
