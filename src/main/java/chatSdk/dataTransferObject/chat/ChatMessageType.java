@@ -54,5 +54,6 @@ public class ChatMessageType {
     public static final int TAG_LIST = 145;
     public static final int GET_TAG_PARTICIPANTS = -4;
     public static final int ERROR = 999;
+    public static final int ADD_TAG_PARTICIPANTS = 143;
 
 }
