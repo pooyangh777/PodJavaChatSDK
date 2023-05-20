@@ -5031,13 +5031,16 @@ public class Chat implements AsyncListener {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
-
     public String createTag(CreateTagRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
     public String editTag(EditTagRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+    public String deleteTag(DeleteTagRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
