@@ -1,7 +1,9 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
+import lombok.Getter;
 
+@Getter
 public class CreateTagRequest extends BaseRequest {
     private String name;
 

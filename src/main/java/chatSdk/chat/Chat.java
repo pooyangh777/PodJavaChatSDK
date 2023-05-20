@@ -121,6 +121,7 @@ public class Chat implements AsyncListener {
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
+        logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent() );
         switch (messageType) {
             case ChatMessageType.CHANGE_TYPE:
                 break;
