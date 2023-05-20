@@ -3,10 +3,11 @@ package chatSdk.dataTransferObject.thread.outPut;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 
 public class DeleteTagRequest extends BaseRequest {
-    private Integer id;
+    private Long id;
 
     public DeleteTagRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.DELETE_TAG);
+        this.subjectId = builder.id;
         this.id = builder.id;
     }
 
@@ -17,7 +18,7 @@ public class DeleteTagRequest extends BaseRequest {
 
     public static class Builder {
         private String uniqueId;
-        private Integer id;
+        private Long id;
 
         public String getUniqueId() {
             return uniqueId;
@@ -28,11 +29,11 @@ public class DeleteTagRequest extends BaseRequest {
             return this;
         }
 
-        public Integer getId() {
+        public Long getId() {
             return id;
         }
 
-        public Builder setId(Integer id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }

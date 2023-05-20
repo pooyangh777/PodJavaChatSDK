@@ -1,18 +1,14 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
-import lombok.Getter;
 
-@Getter
-public class EditTagRequest extends BaseRequest {
-    private String name;
+public class GetTagParticipantsRequest extends BaseRequest {
     private Long id;
 
-    public EditTagRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.EDIT_TAG);
-        this.id = builder.id;
+    public GetTagParticipantsRequest(Builder builder) {
+        super(builder.uniqueId, ChatMessageType.GET_TAG_PARTICIPANTS);
         this.subjectId = builder.id;
-        this.name = builder.name;
+        this.id = builder.id;
     }
 
     @Override
@@ -21,18 +17,8 @@ public class EditTagRequest extends BaseRequest {
     }
 
     public static class Builder {
-        private String name;
         private Long id;
         private String uniqueId;
-
-        public String getName() {
-            return name;
-        }
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
 
         public Long getId() {
             return id;
@@ -52,8 +38,8 @@ public class EditTagRequest extends BaseRequest {
             return this;
         }
 
-        public EditTagRequest build() {
-            return new EditTagRequest(this);
+        public GetTagParticipantsRequest build() {
+            return new GetTagParticipantsRequest(this);
         }
     }
 }

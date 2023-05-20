@@ -4,43 +4,46 @@ import chatSdk.dataTransferObject.chat.ChatMessageType;
 
 import java.util.ArrayList;
 
+
+
 public class AddTagParticipantsRequest extends BaseRequest {
-    private Integer tagId;
-    private ArrayList<Long> threadIds;
+    private Long tagId;
+    private Long[] threadIds;
 
     public AddTagParticipantsRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.ADD_TAG_PARTICIPANTS);
         this.tagId = builder.tagId;
-        this.threadIds = builder.threadIds;
+        this.subjectId = builder.tagId;
+        this.threadIds = builder.threadId.toArray(new Long[builder.threadId.size()]);
     }
 
 
     @Override
     public String getChatMessageContent() {
-        return gson.toJson(this);
+        return gson.toJson(threadIds);
     }
 
 
     public static class Builder {
-        private Integer tagId;
-        private ArrayList<Long> threadIds;
+        private Long tagId;
+        private ArrayList<Long> threadId;
         private String uniqueId;
 
-        public Integer getTagId() {
+        public Long getTagId() {
             return tagId;
         }
 
-        public Builder setTagId(Integer tagId) {
+        public Builder setTagId(Long tagId) {
             this.tagId = tagId;
             return this;
         }
 
-        public ArrayList<Long> getThreadIds() {
-            return threadIds;
+        public ArrayList<Long> getThreadId() {
+            return threadId;
         }
 
-        public Builder setThreadIds(ArrayList<Long> threadIds) {
-            this.threadIds = threadIds;
+        public Builder setThreadId(ArrayList<Long> threadId) {
+            this.threadId = threadId;
             return this;
         }
 

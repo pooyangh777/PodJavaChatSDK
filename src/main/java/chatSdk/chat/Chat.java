@@ -121,7 +121,7 @@ public class Chat implements AsyncListener {
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
-        logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent() );
+        logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent());
         switch (messageType) {
             case ChatMessageType.CHANGE_TYPE:
                 break;
@@ -5032,6 +5032,7 @@ public class Chat implements AsyncListener {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
+
     public String createTag(CreateTagRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
@@ -5041,12 +5042,18 @@ public class Chat implements AsyncListener {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
+
     public String deleteTag(DeleteTagRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
 
     public String addTagParticipants(AddTagParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String getTagParticipants(GetTagParticipantsRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
