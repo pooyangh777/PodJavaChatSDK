@@ -10,7 +10,7 @@ public class UpdateThreadInfoRequest extends BaseRequest {
     private final String metadata;
     private final RequestUploadImage threadImage;
     private Long threadId;
-    private final String title;
+    private final String name;
 
     public UpdateThreadInfoRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.UPDATE_THREAD_INFO);
@@ -18,7 +18,7 @@ public class UpdateThreadInfoRequest extends BaseRequest {
         this.metadata = builder.metadata;
         this.threadImage = builder.threadImage;
         this.subjectId = builder.threadId;
-        this.title = builder.title;
+        this.name = builder.title;
     }
 
     @Override
