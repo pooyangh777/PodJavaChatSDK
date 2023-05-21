@@ -5044,6 +5044,11 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
+    public String exportMessage(ExportMessageRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage2(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
