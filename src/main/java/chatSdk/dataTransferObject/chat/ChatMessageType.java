@@ -34,6 +34,7 @@ public class ChatMessageType {
     public static final int LAST_SEEN_UPDATED = 31;
     public static final int SEEN_MESSAGE_LIST = 32;
     public static final int DELIVERED_MESSAGE_LIST = 33;
+    public static final int IS_NAME_AVAILABLE = 34;
     public static final int INTERACT_MESSAGE = 40;
     public static final int SPAM_PV_THREAD = 41;
     public static final int SET_ROLE_TO_USER = 42;
