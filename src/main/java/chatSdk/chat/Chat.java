@@ -3,6 +3,7 @@ package chatSdk.chat;
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
 import asyncSdk.model.AsyncMessage;
+import chatSdk.chat.chatInterface.ChatInterface;
 import chatSdk.dataTransferObject.GeneralRequest;
 import chatSdk.dataTransferObject.chat.*;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
@@ -66,7 +67,7 @@ import static asyncSdk.model.AsyncMessageType.Message;
 /**
  * Created By Khojasteh on 7/29/2019
  */
-public class Chat implements AsyncListener {
+public class Chat implements AsyncListener, ChatInterface {
     private static final int TOKEN_ISSUER = 1;
 
     private static final Logger logger = LogManager.getLogger(Chat.class);
@@ -5054,6 +5055,11 @@ public class Chat implements AsyncListener {
     }
 
     public String getTagParticipants(GetTagParticipantsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String getTagList(GeneralRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
