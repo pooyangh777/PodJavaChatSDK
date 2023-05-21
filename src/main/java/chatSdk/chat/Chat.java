@@ -122,6 +122,7 @@ public class Chat implements AsyncListener, ChatInterface {
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
+        logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent());
         switch (messageType) {
             case ChatMessageType.CHANGE_TYPE:
                 break;
@@ -5047,7 +5048,7 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setContent(request.getChatMessageContent());
             chatMessage.setSubjectId(request.getSubjectId());
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but that is not send
-//            chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
+            chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
             async.sendMessage(gson.toJson(chatMessage), Message, null);
         }
