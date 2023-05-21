@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 public class SignalMessageRequest extends BaseRequest {
-    private int type;
+    private final int type;
     private Long threadId;
 
     public SignalMessageRequest(Builder builder) {
         super(builder.uniqueId, ChatMessageType.SYSTEM_MESSAGE);
-        this.threadId = builder.threadId;
+        this.subjectId = builder.threadId;
         this.type = builder.type;
     }
 
