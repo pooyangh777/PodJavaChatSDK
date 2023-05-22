@@ -67,7 +67,7 @@ import static asyncSdk.model.AsyncMessageType.Message;
 /**
  * Created By Khojasteh on 7/29/2019
  */
-public class Chat implements AsyncListener, ChatInterface{
+public class Chat implements AsyncListener, ChatInterface {
     private static final int TOKEN_ISSUER = 1;
 
     private static final Logger logger = LogManager.getLogger(Chat.class);
@@ -5030,6 +5030,11 @@ public class Chat implements AsyncListener, ChatInterface{
     }
 
     public String getContacts2(GetContactsRequest request) {
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String changeThreadType(ChangeThreadTypeRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
