@@ -46,7 +46,11 @@ public class ChatMessageType {
     public static final int UNPIN_THREAD = 49;
     public static final int PIN_MESSAGE = 50;
     public static final int UNPIN_MESSAGE = 51;
+<<<<<<< HEAD
     public static final int CHANGE_THREAD_TYPE = 53;
+=======
+    public static final int GET_CURRENT_USER_ROLES = 54;
+>>>>>>> refactor_current_user_roles
     public static final int ALL_UNREAD_MESSAGE_COUNT = 61;
     public static final int CLOSE_THREAD = 102;
     public static final int EXPORT_CHATS = 152;

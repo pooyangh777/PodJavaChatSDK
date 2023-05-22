@@ -3,6 +3,7 @@ package chatSdk.chat.chatInterface;
 import chatSdk.dataTransferObject.message.outPut.*;
 
 public interface MessageInterface {
+    String signalMessage(SignalMessageRequest request);
     String mention(MentionRequest request);
 
     String exportMessage(ExportMessageRequest request);
