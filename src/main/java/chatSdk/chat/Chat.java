@@ -5055,6 +5055,12 @@ public class Chat implements AsyncListener, ChatInterface {
     }
 
     public String updateThreadInfo(UpdateThreadInfoRequest request) {
+
+        sendAsyncMessage2(request);
+        return request.getUniqueId();
+    }
+
+    public String changeThreadType(ChangeThreadTypeRequest request) {
         sendAsyncMessage2(request);
         return request.getUniqueId();
     }
