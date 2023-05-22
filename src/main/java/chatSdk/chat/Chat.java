@@ -245,30 +245,6 @@ public class Chat implements AsyncListener, ChatInterface {
         }
     }
 
-    private void showInfoLog(String tag, String json) {
-        if (config.isLoggable()) logger.log(Level.INFO, "{} \n \n {} ", tag, json);
-
-        if (!Util.isNullOrEmpty(json)) {
-            listener.OnLogEvent(json);
-        }
-    }
-
-    private void showInfoLog(String json) {
-        if (config.isLoggable()) logger.log(Level.INFO, "\n \n {}", json);
-    }
-
-    private void showErrorLog(String tag, String json) {
-        if (config.isLoggable()) logger.log(Level.ERROR, " {} \n \n {} ", tag, json);
-
-        if (!Util.isNullOrEmpty(json)) {
-            listener.OnLogEvent(json);
-        }
-    }
-
-    private void showErrorLog(String e) {
-        if (config.isLoggable()) logger.log(Level.ERROR, "\n \n {} ", e);
-
-    }
 
     private void showErrorLog(Throwable throwable) {
         if (config.isLoggable()) logger.log(Level.ERROR, "\n \n {} ", throwable.getMessage());
@@ -798,31 +774,6 @@ public class Chat implements AsyncListener, ChatInterface {
         showInfoLog("RECEIVE_GET_HISTORY", json);
     }
 
-    private String getErrorOutPut(String errorMessage, long errorCode, String uniqueId) {
-        ErrorOutPut error = new ErrorOutPut(true, errorMessage, errorCode, uniqueId);
-        String jsonError = gson.toJson(error);
-        listener.onError(jsonError, error);
-        listener.OnLogEvent(jsonError);
-        showErrorLog("ErrorMessage :" + errorMessage + " *Code* " + errorCode + " *uniqueId* " + uniqueId);
-        return jsonError;
-    }
-
-
-    private int getExpireAmount() {
-        if (Util.isNullOrEmpty(expireAmount)) {
-            expireAmount = 2 * 24 * 60 * 60;
-        }
-        return expireAmount;
-    }
-
-    /**
-     * @param expireSecond participants and contacts have an expiry date in cache and after expireSecond
-     *                     they are going to delete from the cache/
-     */
-
-    public void setExpireAmount(int expireSecond) {
-        this.expireAmount = expireSecond;
-    }
 
     /**
      * The replacement method is getMessageDeliveredList.
