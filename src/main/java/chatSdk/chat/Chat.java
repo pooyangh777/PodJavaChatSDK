@@ -1179,7 +1179,7 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
-    public String deleteMessage(DeleteMessageRequest request) {
+    public String batchDeleteMessage(BatchDeleteMessageRequest request) {
         sendAsyncMessage(request);
         return request.getUniqueId();
     }
@@ -1346,6 +1346,11 @@ public class Chat implements AsyncListener, ChatInterface {
     }
 
     public String mention(MentionRequest request) {
+        sendAsyncMessage(request);
+        return request.getUniqueId();
+    }
+
+    public String deleteMessage(DeleteMessageRequest request) {
         sendAsyncMessage(request);
         return request.getUniqueId();
     }
