@@ -40,7 +40,6 @@ public class ChatMessageType {
     public static final int SET_ROLE_TO_USER = 42;
     public static final int REMOVE_ROLE_FROM_USER = 43;
     public static final int CLEAR_HISTORY = 44;
-    public static final int SIGNAL_MESSAGE = 45;
     public static final int SYSTEM_MESSAGE = 46;
     public static final int PIN_THREAD = 48;
     public static final int UNPIN_THREAD = 49;

@@ -52,6 +52,8 @@
 ////////import static asyncSdk.model.AsyncMessageType.Message;
 ////////
 ////////public class OldChat {
+
+//private ContactApi contactApi;
 ////////
 ////////    /**
 ////////     * Send text message to the thread
@@ -116,6 +118,15 @@
 ////////        return uniqueId;
 ////////    }
 ////////
+//
+//public synchronized static Chat init(ChatConfig chatConfig, ChatListener listener) {
+//        if (instance == null) {
+//        async = new Async(chatConfig.getAsyncConfig());
+//        instance = new Chat(chatConfig, listener);
+//        instance.contactApi = RetrofitHelperPlatformHost.getInstance(chatConfig.getPlatformHost()).create(ContactApi.class);
+//        }
+//        return instance;
+//        }
 ////////    /**
 ////////     * Its sent message but it gets Object as an attribute
 ////////     *
@@ -3839,6 +3850,129 @@
 //    public void setExpireAmount(int expireSecond) {
 //        this.expireAmount = expireSecond;
 //    }
+
+//private String createFileMetadata(String fileName,
+//        String hashCode,
+//        long fileId,
+//        String mimeType,
+//        long fileSize,
+//        String filePath) {
+//
+//        MetaDataFile metaDataFile = new MetaDataFile();
+//        FileMetaDataContent metaDataContent = new FileMetaDataContent();
+//
+//        metaDataContent.setId(fileId);
+//        metaDataContent.setName(fileName);
+//        metaDataContent.setMimeType(mimeType);
+//        metaDataContent.setSize(fileSize);
+//
+//        if (hashCode != null) {
+//        metaDataContent.setHashCode(hashCode);
+//        metaDataContent.setLink(getFile(fileId, hashCode, true));
+//
+//        } else {
+//        metaDataContent.setLink(filePath);
+//        }
+//
+//        metaDataFile.setFile(metaDataContent);
+//
+//        return gson.toJson(metaDataFile);
+//        }
+//
+//private String createImageMetadata(File fileUri, String hashCode, long imageId, int actualHeight, int actualWidth, String mimeType
+//        , long fileSize, String path, boolean isLocation, String center) {
+//
+//        String originalName = fileUri.getName();
+//        FileImageMetaData fileMetaData = new FileImageMetaData();
+//
+//
+//        if (originalName.contains(".")) {
+//        String editedName = originalName.substring(0, originalName.lastIndexOf('.'));
+//        fileMetaData.setName(editedName);
+//        }
+//        fileMetaData.setHashCode(hashCode);
+//        fileMetaData.setId(imageId);
+//        fileMetaData.setOriginalName(originalName);
+//        fileMetaData.setActualHeight(actualHeight);
+//        fileMetaData.setActualWidth(actualWidth);
+//        fileMetaData.setMimeType(mimeType);
+//        fileMetaData.setSize(fileSize);
+//        if (!Util.isNullOrEmpty(hashCode)) {
+//        fileMetaData.setLink(getImage(imageId, hashCode, false));
+//        } else {
+//        fileMetaData.setLink(path);
+//        }
+//        if (isLocation) {
+//        MetadataLocationFile locationFile = new MetadataLocationFile();
+//        MapLocation mapLocation = new MapLocation();
+//
+//        if (center.contains(",")) {
+//        String latitude = center.substring(0, center.lastIndexOf(','));
+//        String longitude = center.substring(center.lastIndexOf(',') + 1);
+//        mapLocation.setLatitude(Double.parseDouble(latitude));
+//        mapLocation.setLongitude(Double.parseDouble(longitude));
+//        }
+//
+//        locationFile.setLocation(mapLocation);
+//        locationFile.setFile(fileMetaData);
+//        return gson.toJson(locationFile);
+//
+//        } else {
+//        MetaDataImageFile metaData = new MetaDataImageFile();
+//        metaData.setFile(fileMetaData);
+//        return gson.toJson(metaData);
+//        }
+//        }
+//
+///**
+// * This method generate url that you can use to get your file
+// */
+//public String getFile(long fileId, String hashCode, boolean downloadable) {
+//        return config.getFileServer() + "/nzh/file/" + "?fileId=" + fileId + "&downloadable=" + downloadable + "&hashCode=" + hashCode;
+//        }
+//
+///**
+// * This method generate url based on your input params that you can use to get your image
+// */
+//public String getImage(long imageId, String hashCode, boolean downloadable) {
+//        String url;
+//        if (downloadable) {
+//        url = config.getFileServer() + "/nzh/image/" + "?imageId=" + imageId + "&downloadable=" + downloadable + "&hashCode=" + hashCode;
+//        } else {
+//        url = config.getFileServer() + "/nzh/image/" + "?imageId=" + imageId + "&hashCode=" + hashCode;
+//        }
+//        return url;
+//        }
+
+
+//private void showErrorLog(Throwable throwable) {
+//        if (config.isLoggable()) logger.log(Level.ERROR, "\n \n {} ", throwable.getMessage());
+//        }
+
+
+//public String getContentType(File file) throws IOException {
+//        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
+//        return fileTypeMap.getContentType(file.getName());
+//        }
+
+//private int getSignalIntervalTime() {
+//        return signalIntervalTime;
+//        }
+//
+//public void setSignalIntervalTime(int signalIntervalTime) {
+//        this.signalIntervalTime = signalIntervalTime;
+//        }
+//
+//public interface GetThreadHandler {
+//    void onGetThread();
+//}
+//
+//public interface SendTextMessageHandler {
+//    void onSent(String uniqueId, long threadId);
+//
+//    void onSentResult(String content);
+//}
+
 ////
 //////
 //////}

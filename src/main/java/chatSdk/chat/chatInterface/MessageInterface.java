@@ -29,4 +29,6 @@ public interface MessageInterface {
     String seenMessage(SeenMessageRequest request);
 
     String unReadMessageCount(AllUnReadMessageCountRequest request);
+
+    String batchDeleteMessage(BatchDeleteMessageRequest request);
 }
