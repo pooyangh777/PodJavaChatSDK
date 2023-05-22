@@ -1340,6 +1340,11 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
+    public String spam(GeneralRequest request) {
+        sendAsyncMessage(request);
+        return request.getUniqueId();
+    }
+
     private void sendAsyncMessage(BaseRequest request) {
         if (state == ChatState.ChatReady) {
             ChatMessage chatMessage = new ChatMessage();
