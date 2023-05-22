@@ -49,6 +49,13 @@ public class ChatMessageType {
     public static final int ALL_UNREAD_MESSAGE_COUNT = 61;
     public static final int CLOSE_THREAD = 102;
     public static final int EXPORT_CHATS = 152;
+    public static final int CREATE_TAG = 140;
+    public static final int EDIT_TAG = 141;
+    public static final int DELETE_TAG = 142;
+    public static final int ADD_TAG_PARTICIPANTS = 143;
+    public static final int REMOVE_TAG_PARTICIPANTS = 144;
+    public static final int TAG_LIST = 145;
+    public static final int GET_TAG_PARTICIPANTS = -4;
     public static final int ERROR = 999;
 
 }

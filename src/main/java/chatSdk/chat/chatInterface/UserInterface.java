@@ -5,9 +5,9 @@ import chatSdk.dataTransferObject.user.outPut.BlockRequest;
 import chatSdk.dataTransferObject.user.outPut.UnBlockRequest;
 
 public interface UserInterface {
-    String blockList2(BlockListRequest request);
+    String blockList(BlockListRequest request);
 
-    String unBlock2(UnBlockRequest request);
+    String unBlock(UnBlockRequest request);
 
-    String block2(BlockRequest request);
+    String block(BlockRequest request);
 }

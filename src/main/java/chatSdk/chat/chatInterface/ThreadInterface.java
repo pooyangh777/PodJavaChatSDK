@@ -6,31 +6,31 @@ import chatSdk.dataTransferObject.thread.outPut.*;
 public interface ThreadInterface {
     String getThreads(GetThreadRequest requestThread);
 
-    String muteThread2(GeneralRequest request);
+    String muteThread(GeneralRequest request);
 
-    String unMuteThread2(GeneralRequest request);
+    String unMuteThread(GeneralRequest request);
 
-    String unPinThread2(GeneralRequest request);
+    String unPinThread(GeneralRequest request);
 
-    String pinThread2(GeneralRequest request);
+    String pinThread(GeneralRequest request);
 
-    String getThreadParticipants2(ThreadParticipantRequest request);
+    String getThreadParticipants(ThreadParticipantRequest request);
 
-    String removeParticipants2(RemoveParticipantsRequest request);
+    String removeParticipants(RemoveParticipantsRequest request);
 
-    String addParticipants2(AddParticipantsRequest request);
+    String addParticipants(AddParticipantsRequest request);
 
     String closeThread(GeneralRequest request);
 
-    String leaveThread2(LeaveThreadRequest request);
+    String leaveThread(LeaveThreadRequest request);
 
-    String clearHistory2(ClearHistoryRequest request);
+    String clearHistory(ClearHistoryRequest request);
 
-    String createThread2(CreateThreadRequest request);
+    String createThread(CreateThreadRequest request);
 
-    String createThreadWithMessage2(CreateThreadWithMessageRequest request);
+    String createThreadWithMessage(CreateThreadWithMessageRequest request);
 
-    String getHistory2(GetHistoryRequest request);
+    String getHistory(GetHistoryRequest request);
 
-    String getUserInfo2(GeneralRequest request);
+    String getUserInfo(GeneralRequest request);
 }
