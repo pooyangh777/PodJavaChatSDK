@@ -1,6 +1,6 @@
 package chatSdk.dataTransferObject.chat;
 
-import chatSdk.dataTransferObject.ChatResponse;
+import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.contacts.inPut.Contacts;
 import chatSdk.dataTransferObject.contacts.inPut.ResultAddContact;
 import com.google.gson.Gson;
@@ -18,8 +18,8 @@ import java.util.List;
 public class Util {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public static ChatResponse<ResultAddContact> getReformatOutPutAddContact(Contacts contacts, String uniqueId) {
-        ChatResponse<ResultAddContact> chatResponse = new ChatResponse<>();
+    public static ChatResponse2<ResultAddContact> getReformatOutPutAddContact(Contacts contacts, String uniqueId) {
+        ChatResponse2<ResultAddContact> chatResponse = new ChatResponse2<>();
         chatResponse.setUniqueId(uniqueId);
 
         ResultAddContact resultAddContact = new ResultAddContact();

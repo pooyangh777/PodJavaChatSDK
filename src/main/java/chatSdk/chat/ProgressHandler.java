@@ -1,6 +1,6 @@
 package chatSdk.chat;
 
-import chatSdk.dataTransferObject.ChatResponse;
+import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.system.outPut.ErrorOutPut;
 import chatSdk.dataTransferObject.file.inPut.ResultFile;
 import chatSdk.dataTransferObject.file.inPut.ResultImageFile;
@@ -16,7 +16,7 @@ public abstract class ProgressHandler {
         default void onProgressUpdate(String uniqueId, int bytesSent, int totalBytesSent, int totalBytesToSend) {
         }
 
-        default void onFinish(String imageJson, ChatResponse<ResultImageFile> chatResponse) {
+        default void onFinish(String imageJson, ChatResponse2<ResultImageFile> chatResponse) {
         }
 
         default void onError(String jsonError, ErrorOutPut error) {
@@ -41,10 +41,10 @@ public abstract class ProgressHandler {
         default void onProgressUpdate(String uniqueId, int bytesSent, int totalBytesSent, int totalBytesToSend) {
         }
 
-        default void onFinishImage(String json, ChatResponse<ResultImageFile> chatResponse) {
+        default void onFinishImage(String json, ChatResponse2<ResultImageFile> chatResponse) {
         }
 
-        default void onFinishFile(String json, ChatResponse<ResultFile> chatResponse) {
+        default void onFinishFile(String json, ChatResponse2<ResultFile> chatResponse) {
         }
 
         default void onError(String jsonError, ErrorOutPut error) {

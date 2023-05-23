@@ -1,16 +1,14 @@
 package chatSdk.dataTransferObject;
 
-import chatSdk.dataTransferObject.BaseOutPut;
-
-public class ChatResponse<T> extends BaseOutPut {
-
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
+public class ChatResponse<T> {
     private T result;
-
-    public T getResult() {
-        return result;
-    }
-
-    public void setResult(T result) {
-        this.result = result;
-    }
+    private ChatError error;
+    private Long contentCount;
+    private Long time;
+    private String uniqueId;
+    private Long subjectId;
 }
