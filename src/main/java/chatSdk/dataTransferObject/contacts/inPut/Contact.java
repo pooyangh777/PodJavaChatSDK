@@ -9,17 +9,17 @@ import lombok.*;
 @Setter
 @Builder
 public class Contact {
-    private long id;
+    private Long id;
     private String firstName;
-    private long userId;
+    private Long userId;
     private String lastName;
     private Boolean blocked;
-    private long creationDate;
+    private Long creationDate;
     private LinkedUser linkedUser;
     private String cellphoneNumber;
     private String email;
     private String uniqueId;
-    private long notSeenDuration;
-    private boolean hasUser;
+    private Long notSeenDuration;
+    private Boolean hasUser;
 }
 

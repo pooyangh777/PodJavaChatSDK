@@ -3,9 +3,9 @@ package chatSdk.chat;
 import asyncSdk.model.AsyncMessage;
 import chatSdk.dataTransferObject.ChatResponse;
 import chatSdk.dataTransferObject.ChatResponse2;
+import chatSdk.dataTransferObject.GeneralResponse;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
-import chatSdk.dataTransferObject.contacts.inPut.ResultContact;
 import chatSdk.dataTransferObject.message.inPut.*;
 import chatSdk.dataTransferObject.message.outPut.DeliveryMessageRequest;
 import chatSdk.dataTransferObject.system.inPut.Admin;
@@ -19,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,16 +81,16 @@ public class OnReceiveMessageFactory {
                 listener.onGetThreadParticipant(jsonParticipant, resultParticipantChatResponse);
                 break;
             case ChatMessageType.UN_MUTE_THREAD:
-                handleUnMuteThread(chatMessage);
+                onUnmuteThread(chatMessage);
                 break;
             case ChatMessageType.MUTE_THREAD:
-                handleMuteThread(chatMessage);
+                onMuteThread(chatMessage);
                 break;
             case ChatMessageType.UNPIN_THREAD:
-                handleUnpinThread(chatMessage);
+                onUnpinThread(chatMessage);
                 break;
             case ChatMessageType.PIN_THREAD:
-                handlePinThread(chatMessage);
+                onPinThread(chatMessage);
                 break;
             case ChatMessageType.USER_INFO:
                 handleOnUserInfo(chatMessage);
@@ -112,22 +111,22 @@ public class OnReceiveMessageFactory {
                 handleOutPutSeenMessageList(chatMessage);
                 break;
             case ChatMessageType.BLOCK:
-                handleOutPutBlock(chatMessage);
+                onBlock(chatMessage);
                 break;
             case ChatMessageType.UNBLOCK:
-                handleUnBlock(chatMessage);
+                onUnblock(chatMessage);
                 break;
             case ChatMessageType.GET_BLOCKED:
-                handleOutPutGetBlockList(chatMessage);
+                onGetBlockList(chatMessage);
                 break;
             case ChatMessageType.ADD_PARTICIPANT:
                 handleAddParticipant(chatMessage);
                 break;
             case ChatMessageType.GET_CONTACTS:
-                handleGetContact(chatMessage);
+                onGetContacts(chatMessage);
                 break;
             case ChatMessageType.CREATE_THREAD:
-                handleCreateThread(chatMessage);
+                onCreateThread(chatMessage);
                 break;
             case ChatMessageType.GET_HISTORY:
                 onGetHistory(chatMessage);
@@ -275,26 +274,6 @@ public class OnReceiveMessageFactory {
         }
     }
 
-    private void handleUnpinThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultPin> resultUnPinChatResponse = new ChatResponse2<>();
-        listener.onUnPin(chatMessage.getContent(), resultUnPinChatResponse);
-    }
-
-    private void handlePinThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultPin> resultPinChatResponse = new ChatResponse2<>();
-        listener.onPin(chatMessage.getContent(), resultPinChatResponse);
-    }
-
-    private void handleUnMuteThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultMute> chatResponseTemp = new ChatResponse2<>();
-        listener.onMuteThread(chatMessage.getContent(), chatResponseTemp);
-    }
-
-    private void handleMuteThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultMute> chatResponse = new ChatResponse2<>();
-        listener.onUnmuteThread(chatMessage.getContent(), chatResponse);
-    }
-
     private void handleEditMessage(ChatMessage chatMessage) {
         ChatResponse2<ResultNewMessage> chatResponse = new ChatResponse2<>();
         ResultNewMessage newMessage = new ResultNewMessage();
@@ -332,18 +311,6 @@ public class OnReceiveMessageFactory {
         chatResponse.setResult(resultParticipant);
         String content = GsonFactory.gson.toJson(chatResponse);
         listener.OnDeliveredMessageList(content, chatResponse);
-    }
-
-    private void handleGetContact(ChatMessage chatMessage) {
-        ChatResponse2<ResultContact> chatResponse = reformatGetContactResponse(chatMessage);
-        String contactJson = GsonFactory.gson.toJson(chatResponse);
-        listener.onGetContacts(contactJson, chatResponse);
-    }
-
-    private void handleCreateThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultThread> chatResponse = reformatCreateThread(chatMessage);
-        String inviteJson = GsonFactory.gson.toJson(chatResponse);
-        listener.onCreateThread(inviteJson, chatResponse);
     }
 
     private void handleUpdateThreadInfo(ChatMessage chatMessage) {
@@ -403,20 +370,6 @@ public class OnReceiveMessageFactory {
         listener.onDeleteMessage(jsonDeleteMsg, chatResponse);
     }
 
-    private void handleOutPutBlock(ChatMessage chatMessage) {
-        Contact contact = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact.class);
-        ChatResponse2<ResultBlock> chatResponse = new ChatResponse2<>();
-        ResultBlock resultBlock = new ResultBlock();
-        resultBlock.setContact(contact);
-        chatResponse.setResult(resultBlock);
-        chatResponse.setErrorCode(0);
-        chatResponse.setHasError(false);
-        chatResponse.setUniqueId(chatMessage.getUniqueId());
-        String jsonBlock = GsonFactory.gson.toJson(chatResponse);
-        listener.onBlock(jsonBlock, chatResponse);
-    }
-
-
     private void handleClearHistory(ChatMessage chatMessage) {
         ChatResponse2<ResultClearHistory> chatResponseClrHistory = new ChatResponse2<>();
         ResultClearHistory resultClearHistory = new ResultClearHistory();
@@ -458,35 +411,6 @@ public class OnReceiveMessageFactory {
         chatResponse.setUniqueId(chatMessage.getUniqueId());
         String responseJson = GsonFactory.gson.toJson(chatResponse);
         listener.OnRemoveRole(responseJson, chatResponse);
-    }
-
-    private void handleUnBlock(ChatMessage chatMessage) {
-        Contact contact = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact.class);
-        ChatResponse2<ResultBlock> chatResponse = new ChatResponse2<>();
-        ResultBlock resultBlock = new ResultBlock();
-        resultBlock.setContact(contact);
-        chatResponse.setResult(resultBlock);
-        chatResponse.setErrorCode(0);
-        chatResponse.setHasError(false);
-        chatResponse.setUniqueId(chatMessage.getUniqueId());
-        String jsonUnBlock = GsonFactory.gson.toJson(chatResponse);
-        listener.onUnBlock(jsonUnBlock, chatResponse);
-    }
-
-    private void handleOutPutGetBlockList(ChatMessage chatMessage) {
-        ChatResponse2<ResultBlockList> chatResponse = new ChatResponse2<>();
-        chatResponse.setErrorCode(0);
-        chatResponse.setHasError(false);
-        chatResponse.setUniqueId(chatMessage.getUniqueId());
-        ResultBlockList resultBlockList = new ResultBlockList();
-        List<Contact> contacts = GsonFactory.gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Contact>>() {
-        }.getType());
-        resultBlockList.setContentCount(chatMessage.getContentCount());
-        resultBlockList.setContentCount(chatMessage.getContentCount());
-        resultBlockList.setContacts(contacts);
-        chatResponse.setResult(resultBlockList);
-        String jsonGetBlock = GsonFactory.gson.toJson(chatResponse);
-        listener.onGetBlockList(jsonGetBlock, chatResponse);
     }
 
     private void handleOutPutRemoveParticipant(ChatMessage chatMessage) {
@@ -536,31 +460,6 @@ public class OnReceiveMessageFactory {
         return outPutParticipant;
     }
 
-    private ChatResponse2<ResultThread> reformatCreateThread(ChatMessage chatMessage) {
-        ChatResponse2<ResultThread> chatResponse = new ChatResponse2<>();
-        chatResponse.setUniqueId(chatMessage.getUniqueId());
-        ResultThread resultThread = new ResultThread();
-        Conversation conversation = GsonFactory.gson.fromJson(chatMessage.getContent(), Conversation.class);
-        resultThread.setThread(conversation);
-        chatResponse.setResult(resultThread);
-        resultThread.setThread(conversation);
-        return chatResponse;
-    }
-
-    private ChatResponse2<ResultContact> reformatGetContactResponse(ChatMessage chatMessage) {
-        ResultContact resultContact = new ResultContact();
-        ChatResponse2<ResultContact> outPutContact = new ChatResponse2<>();
-        ArrayList<Contact> contacts = GsonFactory.gson.fromJson(chatMessage.getContent(), new TypeToken<ArrayList<Contact>>() {
-        }.getType());
-        resultContact.setContacts(contacts);
-        resultContact.setContentCount(chatMessage.getContentCount());
-        resultContact.setContentCount(chatMessage.getContentCount());
-        outPutContact.setResult(resultContact);
-        outPutContact.setErrorMessage("");
-        outPutContact.setUniqueId(chatMessage.getUniqueId());
-        return outPutContact;
-    }
-
     private void onGetThreads(ChatMessage chatMessage) {
         ConversationResponse[] threads = GsonFactory.gson.fromJson(chatMessage.getContent(), ConversationResponse[].class);
         ChatResponse<ConversationResponse[]> response = new ChatResponse<>();
@@ -576,5 +475,69 @@ public class OnReceiveMessageFactory {
         response.setResult(messages);
         response.setSubjectId(chatMessage.getSubjectId());
         listener.onGetHistory(response);
+    }
+
+    private void onGetContacts(ChatMessage chatMessage) {
+        Contact[] contacts = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact[].class);
+        ChatResponse<Contact[]> response = new ChatResponse<>();
+        response.setResult(contacts);
+        response.setSubjectId(chatMessage.getSubjectId());
+        listener.onGetContacts2(response);
+    }
+
+    private void onMuteThread(ChatMessage chatMessage) {
+        ChatResponse<GeneralResponse> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        listener.onMuteThread(response);
+    }
+
+    private void onUnmuteThread(ChatMessage chatMessage) {
+        ChatResponse<GeneralResponse> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        listener.onUnmuteThread(response);
+    }
+
+    private void onPinThread(ChatMessage chatMessage) {
+        ChatResponse<GeneralResponse> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        listener.onPinThread(response);
+    }
+
+    private void onUnpinThread(ChatMessage chatMessage) {
+        ChatResponse<GeneralResponse> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        listener.onUnPinThread(response);
+    }
+
+    private void onCreateThread(ChatMessage chatMessage) {
+        ConversationResponse conversationResponse = GsonFactory.gson.fromJson(chatMessage.getContent(), ConversationResponse.class);
+        ChatResponse<ConversationResponse> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        response.setResult(conversationResponse);
+        listener.onCreateThread(response);
+    }
+
+    private void onBlock(ChatMessage chatMessage) {
+        Contact contact = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact.class);
+        ChatResponse<Contact> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        response.setResult(contact);
+        listener.onBlock(response);
+    }
+
+    private void onUnblock(ChatMessage chatMessage) {
+        Contact contact = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact.class);
+        ChatResponse<Contact> response = new ChatResponse<>();
+        response.setSubjectId(response.getSubjectId());
+        response.setResult(contact);
+        listener.onUnblock(response);
+    }
+
+    private void onGetBlockList(ChatMessage chatMessage) {
+        Contact[] contacts = GsonFactory.gson.fromJson(chatMessage.getContent(), Contact[].class);
+        ChatResponse<Contact[]> response = new ChatResponse<>();
+        response.setSubjectId(chatMessage.getSubjectId());
+        response.setResult(contacts);
+        listener.onGetBlockList(response);
     }
 }
