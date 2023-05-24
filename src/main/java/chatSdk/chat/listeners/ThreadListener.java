@@ -3,15 +3,15 @@ package chatSdk.chat.listeners;
 import chatSdk.dataTransferObject.ChatResponse;
 import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.GeneralResponse;
-import chatSdk.dataTransferObject.message.inPut.MessageVO;
+import chatSdk.dataTransferObject.message.inPut.Message;
 import chatSdk.dataTransferObject.thread.inPut.*;
 import chatSdk.dataTransferObject.thread.outPut.OutPutThread;
 
 public interface ThreadListener {
-    default void onGetThread(ChatResponse<ConversationResponse[]> thread) {
+    default void onGetThread(ChatResponse<Conversation[]> thread) {
     }
 
-    default void onGetHistory(ChatResponse<MessageVO[]> history) {
+    default void onGetHistory(ChatResponse<Message[]> messages) {
     }
 
     default void onThreadInfoUpdated(String content, ChatResponse2<ResultThread> response) {
@@ -22,7 +22,7 @@ public interface ThreadListener {
 
     default void onUnmuteThread(ChatResponse<GeneralResponse> unmute) {
     }
-    default void onCreateThread(ChatResponse<ConversationResponse> createThread) {
+    default void onCreateThread(ChatResponse<Conversation> createThread) {
     }
 
 

@@ -1,7 +1,7 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
 
-import chatSdk.dataTransferObject.message.inPut.MessageVO;
+import chatSdk.dataTransferObject.message.inPut.Message;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +24,7 @@ public class ConversationResponse{
     private Long lastSeenMessageId;
     private Long lastSeenMessageTime;
     private Integer lastSeenMessageNanos;
-    private MessageVO lastMessageVO;
+    private Message lastMessageVO;
     private Long partnerLastSeenMessageId;
     private Long partnerLastSeenMessageTime;
     private Integer partnerLastSeenMessageNanos;

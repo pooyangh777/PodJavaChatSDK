@@ -1,6 +1,6 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
-public class ReplyInfoVO {
+public class ReplyInfo {
     private Participant participant;
     private long repliedToMessageId;
     private long repliedToMessageTime;
@@ -12,7 +12,7 @@ public class ReplyInfoVO {
     private String metadata;
     private String message;
 
-    public ReplyInfoVO(
+    public ReplyInfo(
             long repliedToMessageId,
             long messageType,
             boolean deleted,
@@ -34,7 +34,7 @@ public class ReplyInfoVO {
         this.repliedToMessageNanos = repliedToMessageNanos;
     }
 
-    public ReplyInfoVO() {
+    public ReplyInfo() {
     }
 
     public Participant getParticipant() {

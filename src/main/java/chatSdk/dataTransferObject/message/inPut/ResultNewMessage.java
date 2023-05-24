@@ -3,7 +3,7 @@ package chatSdk.dataTransferObject.message.inPut;
 
 public class ResultNewMessage {
     private long threadId;
-    private MessageVO messageVO ;
+    private Message messageVO ;
 
     public long getThreadId() {
         return threadId;
@@ -13,11 +13,11 @@ public class ResultNewMessage {
         this.threadId = threadId;
     }
 
-    public MessageVO getMessageVO() {
+    public Message getMessageVO() {
         return messageVO;
     }
 
-    public void setMessageVO(MessageVO messageVO) {
+    public void setMessageVO(Message messageVO) {
         this.messageVO = messageVO;
     }
 }

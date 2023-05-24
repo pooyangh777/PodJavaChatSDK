@@ -2,18 +2,19 @@ package chatSdk.dataTransferObject.message.inPut;
 
 import chatSdk.dataTransferObject.thread.inPut.Conversation;
 import chatSdk.dataTransferObject.thread.inPut.ForwardInfo;
-import chatSdk.dataTransferObject.thread.inPut.ReplyInfoVO;
+import chatSdk.dataTransferObject.thread.inPut.ReplyInfo;
 import chatSdk.dataTransferObject.thread.inPut.Participant;
+import com.google.gson.annotations.SerializedName;
 
-public class MessageVO {
+public class Message {
     private Long id;
     private String uniqueId;
     private Long previousId;
     private String message;
-    private int messageType;
-    private boolean edited;
-    private boolean editable;
-    private boolean deletable;
+    private Integer messageType;
+    private Boolean edited;
+    private Boolean editable;
+    private Boolean deletable;
     private Participant participant;
     private Conversation conversation;
     private Long time;
@@ -22,7 +23,9 @@ public class MessageVO {
     private Boolean seen;
     private String metadata;
     private String systemMetadata;
-    private ReplyInfoVO replyInfoVO;
+
+    @SerializedName("replyInfoVO")
+    private ReplyInfo replyInfo;
     private ForwardInfo forwardInfo;
     private boolean mentioned;
 
@@ -58,35 +61,35 @@ public class MessageVO {
         this.message = message;
     }
 
-    public int getMessageType() {
+    public Integer getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(int messageType) {
+    public void setMessageType(Integer messageType) {
         this.messageType = messageType;
     }
 
-    public boolean isEdited() {
+    public Boolean isEdited() {
         return edited;
     }
 
-    public void setEdited(boolean edited) {
+    public void setEdited(Boolean edited) {
         this.edited = edited;
     }
 
-    public boolean isEditable() {
+    public Boolean isEditable() {
         return editable;
     }
 
-    public void setEditable(boolean editable) {
+    public void setEditable(Boolean editable) {
         this.editable = editable;
     }
 
-    public boolean isDeletable() {
+    public Boolean isDeletable() {
         return deletable;
     }
 
-    public void setDeletable(boolean deletable) {
+    public void setDeletable(Boolean deletable) {
         this.deletable = deletable;
     }
 
@@ -154,12 +157,12 @@ public class MessageVO {
         this.systemMetadata = systemMetadata;
     }
 
-    public ReplyInfoVO getReplyInfoVO() {
-        return replyInfoVO;
+    public ReplyInfo getReplyInfo() {
+        return replyInfo;
     }
 
-    public void setReplyInfoVO(ReplyInfoVO replyInfoVO) {
-        this.replyInfoVO = replyInfoVO;
+    public void setReplyInfo(ReplyInfo replyInfo) {
+        this.replyInfo = replyInfo;
     }
 
     public ForwardInfo getForwardInfo() {

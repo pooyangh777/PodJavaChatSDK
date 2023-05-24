@@ -18,4 +18,5 @@ public class ChatMessage {
     private String systemMetadata;
     private String metadata;
     private Long repliedTo;
+    private Long time;
 }

@@ -1,7 +1,7 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
-import chatSdk.dataTransferObject.message.inPut.MessageVO;
-import chatSdk.dataTransferObject.thread.inPut.Participant;
+import chatSdk.dataTransferObject.message.inPut.Message;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -21,7 +21,8 @@ public class Conversation {
     private Long lastSeenMessageId;
     private Long lastSeenMessageTime;
     private Integer lastSeenMessageNanos;
-    private MessageVO lastMessageVO;
+    @SerializedName("lastMessageVO")
+    private Message lastMessageObject;
     private Long partnerLastSeenMessageId;
     private Long partnerLastSeenMessageTime;
     private Integer partnerLastSeenMessageNanos;
@@ -160,12 +161,12 @@ public class Conversation {
         this.lastSeenMessageNanos = lastSeenMessageNanos;
     }
 
-    public MessageVO getLastMessageVO() {
-        return lastMessageVO;
+    public Message getLastMessageObject() {
+        return lastMessageObject;
     }
 
-    public void setLastMessageVO(MessageVO lastMessageVO) {
-        this.lastMessageVO = lastMessageVO;
+    public void setLastMessageObject(Message lastMessageObject) {
+        this.lastMessageObject = lastMessageObject;
     }
 
     public Long getPartnerLastSeenMessageId() {

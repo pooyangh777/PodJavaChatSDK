@@ -1,13 +1,13 @@
 package chatSdk.dataTransferObject.user.inPut;
 
 
-import chatSdk.dataTransferObject.message.inPut.MessageVO;
+import chatSdk.dataTransferObject.message.inPut.Message;
 
 import java.util.List;
 
 public class ResultHistory {
 
-    private List<MessageVO> history;
+    private List<Message> history;
     private Long contentCount;
     private Boolean hasNext;
     private Long nextOffset;
@@ -37,11 +37,11 @@ public class ResultHistory {
         this.nextOffset = nextOffset;
     }
 
-    public List<MessageVO> getHistory() {
+    public List<Message> getHistory() {
         return history;
     }
 
-    public void setHistory(List<MessageVO> history) {
+    public void setHistory(List<Message> history) {
         this.history = history;
     }
 
