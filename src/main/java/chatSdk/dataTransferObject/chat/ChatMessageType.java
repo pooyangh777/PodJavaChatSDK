@@ -49,6 +49,13 @@ public class ChatMessageType {
     public static final int GET_CURRENT_USER_ROLES = 54;
     public static final int ALL_UNREAD_MESSAGE_COUNT = 61;
     public static final int CLOSE_THREAD = 102;
+    public static final int REGISTER_ASSISTANT = 107;
+    public static final int deacticveAssistant = 108;
+    public static final int getAssistants = 109;
+    public static final int getAssistantHistory = 115;
+    public static final int blockAssistant = 116;
+    public static final int unblockAssistant = 117;
+    public static final int blockedAssistnts = 118;
     public static final int EXPORT_CHATS = 152;
     public static final int CREATE_TAG = 140;
     public static final int EDIT_TAG = 141;

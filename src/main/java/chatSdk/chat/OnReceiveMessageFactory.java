@@ -156,6 +156,8 @@ public class OnReceiveMessageFactory {
             case ChatMessageType.INTERACT_MESSAGE:
 //                handleInteractiveMessage(chatMessage);
                 break;
+            case ChatMessageType.REGISTER_ASSISTANT:
+                onRegisterAssistant(chatMessage);
         }
     }
 
@@ -557,6 +559,11 @@ public class OnReceiveMessageFactory {
     private void onRemoveFromThread(ChatMessage chatMessage) {
         ChatResponse<Conversation> response = decodedResponse(Conversation.class, chatMessage);
         listener.onRemovedFromThread(response);
+    }
+
+    private void onRegisterAssistant(ChatMessage chatMessage) {
+        ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
+        listener.onRegisterAssistant(response);
     }
 
 

@@ -62,4 +62,7 @@ public interface ThreadListener {
 
     default void onUnPinThread(ChatResponse<GeneralResponse> unPin) {
     }
+
+    default void onRegisterAssistant(ChatResponse<Assistant[]> registerAssistant) {
+    }
 }

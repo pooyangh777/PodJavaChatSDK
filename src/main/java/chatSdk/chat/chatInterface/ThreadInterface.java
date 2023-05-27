@@ -57,4 +57,6 @@ public interface ThreadInterface {
     String getHistory(GetHistoryRequest request);
 
     String getUserInfo(GeneralRequest request);
+
+    String registerAssistant(RegisterAssistantRequest request);
 }
