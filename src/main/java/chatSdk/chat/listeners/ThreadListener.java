@@ -14,6 +14,9 @@ public interface ThreadListener {
     default void onGetHistory(ChatResponse<Message[]> messages) {
     }
 
+    default void onClearHistory(ChatResponse<GeneralResponse> clearHistory) {
+    }
+
     default void onThreadInfoUpdated(String content, ChatResponse2<ResultThread> response) {
     }
 
@@ -22,6 +25,7 @@ public interface ThreadListener {
 
     default void onUnmuteThread(ChatResponse<GeneralResponse> unmute) {
     }
+
     default void onCreateThread(ChatResponse<Conversation> createThread) {
     }
 
@@ -29,22 +33,25 @@ public interface ThreadListener {
     default void onGetThreadParticipant(String content, ChatResponse2<ResultParticipant> response) {
     }
 
+    default void onGetThreadParticipant2(ChatResponse<Participant[]> threadParticipants) {
+    }
+
     default void onRenameThread(String content, OutPutThread outPutThread) {
     }
 
-    default void onUpdateThreadInfo(String threadJson, ChatResponse2<ResultThread> response) {
+    default void onUpdateThreadInfo(ChatResponse<Conversation> updateThreadInfo) {
     }
 
-    default void onThreadLeaveParticipant(String content, ChatResponse2<ResultLeaveThread> response) {
+    default void onThreadLeaveParticipant(ChatResponse<ResultLeaveThread> leaveThread) {
     }
 
-    default void onThreadRemoveParticipant(String content, ChatResponse2<ResultParticipant> response) {
+    default void onThreadRemoveParticipant(ChatResponse<Participant[]> removeParticipants) {
     }
 
-    default void onThreadAddParticipant(String content, ChatResponse2<ResultAddParticipant> response) {
+    default void onThreadAddParticipant(ChatResponse<Conversation> addThreadParticipants) {
     }
 
-    default void OnRemovedFromThread(String content, ChatResponse2<ResultThread> chatResponse) {
+    default void onRemovedFromThread(ChatResponse<Conversation> removeFromThread) {
     }
 
     default void OnGetThreadAdmin(String content) {

@@ -17,8 +17,10 @@ import chatSdk.dataTransferObject.user.outPut.*;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 import static asyncSdk.model.AsyncMessageType.Message;
 
 /**
@@ -56,7 +58,8 @@ public class Chat implements AsyncListener, ChatInterface {
     }
 
     @Override
-    public void onError(Exception exception) {}
+    public void onError(Exception exception) {
+    }
 
     @Override
     public void onStateChanged(AsyncState state, Async async) {
@@ -204,6 +207,11 @@ public class Chat implements AsyncListener, ChatInterface {
     }
 
     public String pinMessage(PinMessageRequest request) {
+        sendAsyncMessage(request);
+        return request.getUniqueId();
+    }
+
+    public String unPinMessage(UnpinMessageRequest request) {
         sendAsyncMessage(request);
         return request.getUniqueId();
     }

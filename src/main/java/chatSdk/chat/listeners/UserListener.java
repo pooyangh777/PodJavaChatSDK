@@ -13,11 +13,7 @@ public interface UserListener {
     default void onBlock(ChatResponse<Contact> block) {}
 
     default void onUnblock(ChatResponse<Contact> unblock) {}
-
-    default void onSeen(String content, ChatResponse2<ResultMessage> response) {}
-    default void onDeliver(String content, ChatResponse2<ResultMessage> response) {}
     default void onGetBlockList(ChatResponse<Contact[]> blockList) {}
 
-    default void OnClearHistory(String content, ChatResponse2<ResultClearHistory> chatResponse) {}
     default void onLastSeenUpdated(String content) {}
 }

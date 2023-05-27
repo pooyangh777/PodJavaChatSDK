@@ -4,6 +4,7 @@ import chatSdk.dataTransferObject.message.outPut.*;
 
 public interface MessageInterface {
     String signalMessage(SignalMessageRequest request);
+
     String mention(MentionRequest request);
 
     String exportMessage(ExportMessageRequest request);
@@ -15,6 +16,8 @@ public interface MessageInterface {
     String deleteMessage(DeleteMessageRequest request);
 
     String pinMessage(PinMessageRequest request);
+
+    String unPinMessage(UnpinMessageRequest request);
 
     String deliveredMessageList(DeliveredMessageListRequest request);
 
