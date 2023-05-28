@@ -160,6 +160,8 @@ public class OnReceiveMessageFactory {
                 onRegisterAssistant(chatMessage);
             case ChatMessageType.DEACTICVE_ASSISTANT:
                 onDeActiveAssistant(chatMessage);
+            case ChatMessageType.GET_ASSISTANTS:
+                onGetAssistant(chatMessage);
         }
     }
 
@@ -570,6 +572,11 @@ public class OnReceiveMessageFactory {
     private void onDeActiveAssistant(ChatMessage chatMessage) {
         ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
         listener.onDeActiveAssistant(response);
+    }
+
+    private void onGetAssistant(ChatMessage chatMessage) {
+        ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
+        listener.onGetAssistant(response);
     }
 
 
