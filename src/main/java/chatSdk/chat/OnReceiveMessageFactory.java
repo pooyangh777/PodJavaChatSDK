@@ -49,7 +49,6 @@ public class OnReceiveMessageFactory {
                 handleError(chatMessage);
                 break;
             case ChatMessageType.FORWARD_MESSAGE:
-//                handleForwardMessage(chatMessage);
                 onForwardMessage(chatMessage);
                 break;
             case ChatMessageType.RELATION_INFO:
@@ -64,11 +63,9 @@ public class OnReceiveMessageFactory {
                 onRemoveFromThread(chatMessage);
                 break;
             case ChatMessageType.LEAVE_THREAD:
-//                handleOutPutLeaveThread(chatMessage);
                 onLeaveThread(chatMessage);
                 break;
             case ChatMessageType.MESSAGE:
-//                handleNewMessage(chatMessage);
                 onNewMessage(chatMessage);
                 break;
             case ChatMessageType.PING:
@@ -103,15 +100,12 @@ public class OnReceiveMessageFactory {
                 onEditMessage(chatMessage);
                 break;
             case ChatMessageType.UPDATE_THREAD_INFO:
-//                handleUpdateThreadInfo(chatMessage);
                 onUpdateThreadInfo(chatMessage);
                 break;
             case ChatMessageType.DELIVERED_MESSAGE_LIST:
-//                handleOutPutDeliveredMessageList(chatMessage);
                 onDeliveredMessageList(chatMessage);
                 break;
             case ChatMessageType.SEEN_MESSAGE_LIST:
-//                handleOutPutSeenMessageList(chatMessage);
                 onSeenMessageList(chatMessage);
                 break;
             case ChatMessageType.BLOCK:
@@ -124,7 +118,6 @@ public class OnReceiveMessageFactory {
                 onGetBlockList(chatMessage);
                 break;
             case ChatMessageType.ADD_PARTICIPANT:
-//                handleAddParticipant(chatMessage);
                 onAddParticipants(chatMessage);
                 break;
             case ChatMessageType.GET_CONTACTS:
@@ -136,10 +129,6 @@ public class OnReceiveMessageFactory {
             case ChatMessageType.GET_HISTORY:
                 onGetHistory(chatMessage);
                 break;
-            case ChatMessageType.THREAD_INFO_UPDATED:
-//                handleThreadInfoUpdated(chatMessage);
-                onUpdateThreadInfo(chatMessage);
-                break;
             case ChatMessageType.LAST_SEEN_UPDATED:
                 handleLastSeenUpdated(chatMessage);
                 break;
@@ -150,11 +139,9 @@ public class OnReceiveMessageFactory {
                 handleRemoveRole(chatMessage);
                 break;
             case ChatMessageType.CLEAR_HISTORY:
-//                handleClearHistory(chatMessage);
                 onClearHistory(chatMessage);
                 break;
             case ChatMessageType.INTERACT_MESSAGE:
-//                handleInteractiveMessage(chatMessage);
                 break;
         }
     }

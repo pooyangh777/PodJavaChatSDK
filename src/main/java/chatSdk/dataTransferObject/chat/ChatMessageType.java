@@ -30,7 +30,6 @@ public class ChatMessageType {
     public static final int THREAD_PARTICIPANTS = 27;
     public static final int EDIT_MESSAGE = 28;
     public static final int DELETE_MESSAGE = 29;
-    public static final int THREAD_INFO_UPDATED = 30;
     public static final int LAST_SEEN_UPDATED = 31;
     public static final int SEEN_MESSAGE_LIST = 32;
     public static final int DELIVERED_MESSAGE_LIST = 33;
