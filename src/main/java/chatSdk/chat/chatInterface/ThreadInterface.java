@@ -59,4 +59,6 @@ public interface ThreadInterface {
     String getUserInfo(GeneralRequest request);
 
     String registerAssistant(RegisterAssistantRequest request);
+
+    String deActiveAssistant(DeactiveAssistantRequest request);
 }

@@ -65,4 +65,7 @@ public interface ThreadListener {
 
     default void onRegisterAssistant(ChatResponse<Assistant[]> registerAssistant) {
     }
+
+    default void onDeActiveAssistant(ChatResponse<Assistant[]> DeActiveAssistant) {
+    }
 }

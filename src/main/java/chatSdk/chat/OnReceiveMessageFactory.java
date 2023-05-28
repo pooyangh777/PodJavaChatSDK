@@ -158,6 +158,8 @@ public class OnReceiveMessageFactory {
                 break;
             case ChatMessageType.REGISTER_ASSISTANT:
                 onRegisterAssistant(chatMessage);
+            case ChatMessageType.DEACTICVE_ASSISTANT:
+                onDeActiveAssistant(chatMessage);
         }
     }
 
@@ -521,7 +523,7 @@ public class OnReceiveMessageFactory {
         if (response.getResult() != null) {
             ownerId = response.getResult().getParticipant().getId();
         }
-
+        listener.onNewMessage(response);
         boolean isMe = ownerId == Chat.getInstance().getUser().getId();
         if (!isMe && response.getResult() != null) {
             DeliveryMessageRequest request = new DeliveryMessageRequest.Builder()
@@ -530,7 +532,6 @@ public class OnReceiveMessageFactory {
                     .build();
             Chat.getInstance().deliveryMessage(request);
         }
-        listener.onNewMessage(response);
     }
 
     private void onUpdateThreadInfo(ChatMessage chatMessage) {
@@ -564,6 +565,11 @@ public class OnReceiveMessageFactory {
     private void onRegisterAssistant(ChatMessage chatMessage) {
         ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
         listener.onRegisterAssistant(response);
+    }
+
+    private void onDeActiveAssistant(ChatMessage chatMessage) {
+        ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
+        listener.onDeActiveAssistant(response);
     }
 
 

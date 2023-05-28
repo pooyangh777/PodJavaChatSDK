@@ -1,6 +1,5 @@
 package chatSdk.dataTransferObject.thread.inPut;
 
-import chatSdk.dataTransferObject.chat.RoleType;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +16,6 @@ public class Assistant {
     private Invitee assistant;
     @SerializedName("participantVo")
     private Participant participant;
-    private ArrayList<String> roles;
+    private ArrayList<String> roleTypes;
     private Boolean block;
 }
