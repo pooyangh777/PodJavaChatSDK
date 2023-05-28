@@ -65,7 +65,11 @@ public class Chat implements AsyncListener, ChatInterface {
     public void onStateChanged(AsyncState state, Async async) {
         switch (state) {
             case AsyncReady:
-                this.state = ChatState.ChatReady;
+                if (user == null) {
+                    internalGetUserInfo();
+                } else {
+                    this.state = ChatState.ChatReady;
+                }
                 pingWithDelay();
                 break;
             case Connecting:
@@ -80,6 +84,10 @@ public class Chat implements AsyncListener, ChatInterface {
                 break;
         }
         listener.onChatState(this.state);
+    }
+
+    void setState(ChatState state) {
+        this.state = state;
     }
 
     public void connect() throws Exception {
@@ -370,6 +378,15 @@ public class Chat implements AsyncListener, ChatInterface {
     public String currentUserRoles(GeneralRequest request) {
         sendAsyncMessage(request);
         return request.getUniqueId();
+    }
+
+    void internalGetUserInfo() {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setToken(config.getToken());
+        chatMessage.setUniqueId(UUID.randomUUID().toString());
+        chatMessage.setType(ChatMessageType.USER_INFO);
+        chatMessage.setTypeCode(config.getTypeCode());
+        async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
     }
 
     private void sendAsyncMessage(BaseRequest request) {

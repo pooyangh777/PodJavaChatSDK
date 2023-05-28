@@ -1,36 +1,34 @@
 package chatSdk.dataTransferObject.user.inPut;
 
-
 public class UserInfo {
-
-    private long id;
-    private boolean sendEnable;
-    private boolean receiveEnable;
+    private Long id;
+    private Boolean sendEnable;
+    private Boolean receiveEnable;
     private String name;
     private String cellphoneNumber;
     private String image;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public boolean isSendEnable() {
+    public Boolean isSendEnable() {
         return sendEnable;
     }
 
-    public void setSendEnable(boolean sendEnable) {
+    public void setSendEnable(Boolean sendEnable) {
         this.sendEnable = sendEnable;
     }
 
-    public boolean isReceiveEnable() {
+    public Boolean isReceiveEnable() {
         return receiveEnable;
     }
 
-    public void setReceiveEnable(boolean receiveEnable) {
+    public void setReceiveEnable(Boolean receiveEnable) {
         this.receiveEnable = receiveEnable;
     }
 

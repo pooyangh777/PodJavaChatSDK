@@ -5,6 +5,7 @@ import chatSdk.dataTransferObject.ChatResponse;
 import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.GeneralResponse;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
+import chatSdk.dataTransferObject.chat.ChatState;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
 import chatSdk.dataTransferObject.message.inPut.*;
 import chatSdk.dataTransferObject.message.outPut.DeliveryMessageRequest;
@@ -17,6 +18,7 @@ import chatSdk.dataTransferObject.user.inPut.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -444,6 +446,11 @@ public class OnReceiveMessageFactory {
 
     private void onUserInfo(ChatMessage chatMessage) {
         ChatResponse<UserInfo> response = decodedResponse(UserInfo.class, chatMessage);
+        if (Chat.getInstance().getUser() == null) {
+            Chat.getInstance().setUser(response.getResult());
+            Chat.getInstance().setState(ChatState.ChatReady);
+            listener.onChatState(ChatState.ChatReady);
+        }
         listener.onUserInfo(response);
     }
 
@@ -452,22 +459,30 @@ public class OnReceiveMessageFactory {
         listener.onDeleteMessage(response);
     }
 
-    //    dont work correct
     private void onSent(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onSent(response);
+        listener.onSent(decodeMessageResult(chatMessage));
     }
 
-    //    dont work correct
     private void onDelivered(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onDelivered(response);
+        listener.onDelivered(decodeMessageResult(chatMessage));
     }
 
-    //    dont work correct
     private void onSeen(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onSeen(response);
+        listener.onSeen(decodeMessageResult(chatMessage));
+    }
+
+    private ChatResponse<ResultMessage> decodeMessageResult(ChatMessage chatMessage) {
+        ResultMessage resultMessage = new ResultMessage();
+        try {
+            resultMessage.setMessageId(NumberUtils.parseNumber(chatMessage.getContent(), Long.class));
+        } catch (Exception e) {
+            System.out.println("Error to convert to Long");
+        }
+        resultMessage.setConversationId(chatMessage.getSubjectId());
+        resultMessage.setMessageTime(chatMessage.getTime());
+        ChatResponse<ResultMessage> response = new ChatResponse<>();
+        response.setResult(resultMessage);
+        return response;
     }
 
     private void onClearHistory(ChatMessage chatMessage) {
@@ -502,12 +517,14 @@ public class OnReceiveMessageFactory {
 
     private void onNewMessage(ChatMessage chatMessage) {
         ChatResponse<Message> response = decodedResponse(Message.class, chatMessage);
-        long ownerId = 0;
+        Long ownerId = 0L;
         if (response.getResult() != null) {
             ownerId = response.getResult().getParticipant().getId();
         }
-
-        boolean isMe = ownerId == Chat.getInstance().getUser().getId();
+        boolean isMe = true;
+        if (Chat.getInstance().getUser().getId() != null) {
+            isMe = Objects.equals(ownerId, Chat.getInstance().getUser().getId());
+        }
         if (!isMe && response.getResult() != null) {
             DeliveryMessageRequest request = new DeliveryMessageRequest.Builder()
                     .setMessageId(response.getResult().getId())
@@ -525,12 +542,14 @@ public class OnReceiveMessageFactory {
 
     private void onForwardMessage(ChatMessage chatMessage) {
         ChatResponse<Message> response = decodedResponse(Message.class, chatMessage);
-        long ownerId = 0;
+        Long ownerId = 0L;
         if (response != null) {
             ownerId = response.getResult().getParticipant().getId();
         }
-        listener.onNewMessage(response);
-        boolean isMe = ownerId == Chat.getInstance().getUser().getId();
+        boolean isMe = true;
+        if (Chat.getInstance().getUser().getId() != null) {
+            isMe = Objects.equals(ownerId, Chat.getInstance().getUser().getId());
+        }
         if (!isMe && response != null) {
             DeliveryMessageRequest request = new DeliveryMessageRequest.Builder()
                     .setMessageId(response.getResult().getId())
@@ -538,6 +557,7 @@ public class OnReceiveMessageFactory {
                     .build();
             Chat.getInstance().deliveryMessage(request);
         }
+        listener.onNewMessage(response);
     }
 
     //dont work correct
@@ -545,7 +565,6 @@ public class OnReceiveMessageFactory {
         ChatResponse<Conversation> response = decodedResponse(Conversation.class, chatMessage);
         listener.onRemovedFromThread(response);
     }
-
 
     private <T> ChatResponse<T> decodedResponse(Class<T> type, ChatMessage chatMessage) {
         T decodedContent = GsonFactory.gson.fromJson(chatMessage.getContent(), type);
