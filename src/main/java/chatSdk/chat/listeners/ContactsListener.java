@@ -4,7 +4,7 @@ import chatSdk.dataTransferObject.ChatResponse;
 import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.contacts.inPut.*;
 
-public interface ContactsListener {
+public interface ContactsListener extends Listener {
     default void onGetContacts(ChatResponse<Contact[]> contacts) {}
 
     default void onContactAdded(String content, ChatResponse2<ResultAddContact> response) {}

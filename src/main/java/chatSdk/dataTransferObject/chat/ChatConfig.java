@@ -20,6 +20,6 @@ public class ChatConfig {
     private String typeCode = "default";
     private long ttl;
     private boolean isLoggable = false;
-    private int maxReconnectCount = 5;
-    private long reconnectInterval = 5000;
+    private Long maxReconnectCount = 5L;
+    private Long reconnectInterval = 5000L;
 }

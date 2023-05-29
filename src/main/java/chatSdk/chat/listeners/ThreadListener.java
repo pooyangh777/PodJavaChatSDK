@@ -7,7 +7,7 @@ import chatSdk.dataTransferObject.message.inPut.Message;
 import chatSdk.dataTransferObject.thread.inPut.*;
 import chatSdk.dataTransferObject.thread.outPut.OutPutThread;
 
-public interface ThreadListener {
+public interface ThreadListener extends Listener {
     default void onGetThread(ChatResponse<Conversation[]> thread) {
     }
 

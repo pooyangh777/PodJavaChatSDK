@@ -7,7 +7,7 @@ import chatSdk.dataTransferObject.file.inPut.ResultImageFile;
 import chatSdk.dataTransferObject.user.inPut.ResultUserInfo;
 import chatSdk.dataTransferObject.user.inPut.UserInfo;
 
-public interface FileListener {
+public interface FileListener extends Listener {
     default void onUserInfo(ChatResponse<UserInfo> userInfo) {}
 
     default void onUploadImageFile(String content, ChatResponse2<ResultImageFile> response) {}

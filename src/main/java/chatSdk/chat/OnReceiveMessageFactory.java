@@ -449,7 +449,7 @@ public class OnReceiveMessageFactory {
         if (Chat.getInstance().getUser() == null) {
             Chat.getInstance().setUser(response.getResult());
             Chat.getInstance().setState(ChatState.ChatReady);
-            Chat.getInstance().stopAsyncReconnect();
+//            Chat.getInstance().stopAsyncReconnect();
             listener.onChatState(ChatState.ChatReady);
         }
         listener.onUserInfo(response);

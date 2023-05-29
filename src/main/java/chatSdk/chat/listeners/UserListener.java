@@ -9,7 +9,7 @@ import chatSdk.dataTransferObject.user.inPut.ResultBlockList;
 import chatSdk.dataTransferObject.user.inPut.ResultClearHistory;
 import chatSdk.dataTransferObject.user.inPut.ResultHistory;
 
-public interface UserListener {
+public interface UserListener extends Listener {
     default void onBlock(ChatResponse<Contact> block) {}
 
     default void onUnblock(ChatResponse<Contact> unblock) {}

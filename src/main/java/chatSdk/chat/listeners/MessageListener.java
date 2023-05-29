@@ -7,7 +7,7 @@ import chatSdk.dataTransferObject.message.inPut.*;
 import chatSdk.dataTransferObject.thread.inPut.Participant;
 import chatSdk.dataTransferObject.thread.inPut.ResultParticipant;
 
-public interface MessageListener {
+public interface MessageListener extends Listener {
     default void onDeleteMessage(ChatResponse<Message> deleteMessage) {
     }
 

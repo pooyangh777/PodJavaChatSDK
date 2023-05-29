@@ -36,8 +36,8 @@ public class Chat implements AsyncListener, ChatInterface {
     private long lastSentMessageTime;
     private ChatState state;
     public ChatConfig config;
-    private int reconnectCount = 0;
-    private Timer reconnectTimer;
+//    private Long reconnectCount = 0L;
+//    private Timer reconnectTimer;
 
     private final OnReceiveMessageFactory responseHandlers = new OnReceiveMessageFactory();
 
@@ -72,7 +72,7 @@ public class Chat implements AsyncListener, ChatInterface {
                     internalGetUserInfo();
                 } else {
                     this.state = ChatState.ChatReady;
-                    stopAsyncReconnect();
+//                    stopAsyncReconnect();
                 }
                 pingWithDelay();
                 break;
@@ -85,7 +85,7 @@ public class Chat implements AsyncListener, ChatInterface {
             case Closed:
                 this.state = ChatState.Closed;
                 TokenExecutor.stopThread();
-                checkAsyncIsConnected();
+//                checkAsyncIsConnected();
                 break;
         }
         listener.onChatState(this.state);
@@ -121,35 +121,35 @@ public class Chat implements AsyncListener, ChatInterface {
         }
     }
 
-    private void checkAsyncIsConnected() {
-        lastSentMessageTime = new Date().getTime();
-        reconnectTimer = new Timer();
-        reconnectTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reconnectAsync();
-            }
-        }, 0, config.getReconnectInterval());
-    }
+//    private void checkAsyncIsConnected() {
+//        lastSentMessageTime = new Date().getTime();
+//        reconnectTimer = new Timer();
+//        reconnectTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                reconnectAsync();
+//            }
+//        }, 0, config.getReconnectInterval());
+//    }
 
-    private void reconnectAsync() {
-        if (async.getState() == AsyncState.Closed && reconnectCount < config.getMaxReconnectCount()) {
-            try {
-                logger.info("Reconnecting " + reconnectCount  + " of " + config.getMaxReconnectCount());
-                reconnectCount++;
-                async.connect();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    void stopAsyncReconnect() {
-        reconnectCount = config.getMaxReconnectCount();
-        if (reconnectTimer != null) {
-            reconnectTimer.cancel();
-        }
-    }
+//    private void reconnectAsync() {
+//        if (async.getState() == AsyncState.Closed && reconnectCount < config.getMaxReconnectCount()) {
+//            try {
+//                logger.info("Reconnecting " + reconnectCount  + " of " + config.getMaxReconnectCount());
+//                reconnectCount++;
+//                async.connect();
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    }
+//
+//    void stopAsyncReconnect() {
+//        reconnectCount = config.getMaxReconnectCount();
+//        if (reconnectTimer != null) {
+//            reconnectTimer.cancel();
+//        }
+//    }
 
     public UserInfo getUser() {
         return user;
@@ -436,6 +436,22 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
             async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
+        }
+    }
+
+    public ChatState getState() {
+        return state;
+    }
+
+    public AsyncState getAsyncState() {
+        return async.getState();
+    }
+
+    public void forceReconnect() {
+        try {
+            connect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

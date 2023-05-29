@@ -4,7 +4,7 @@ import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.map.inPut.ResultMapReverse;
 import chatSdk.dataTransferObject.map.outPut.OutPutMapNeshan;
 
-public interface MapListener {
+public interface MapListener extends Listener {
 
     default void onMapSearch(String content, OutPutMapNeshan outPutMapNeshan) {}
     default void onMapRouting(String content) {}
