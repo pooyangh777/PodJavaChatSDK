@@ -64,5 +64,5 @@ public interface ThreadInterface {
 
     String getAssistant(GetAssistantRequest request);
 
-    String blockAssistantRequest(BlockAssistantRequest request);
+    String blockUnblockAssistantRequest(BlockAssistantRequest request);
 }

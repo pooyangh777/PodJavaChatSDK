@@ -387,7 +387,7 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
-    public String blockAssistantRequest(BlockAssistantRequest request){
+    public String blockUnblockAssistantRequest(BlockAssistantRequest request){
         sendAsyncMessage(request);
         return request.getUniqueId();
     }
