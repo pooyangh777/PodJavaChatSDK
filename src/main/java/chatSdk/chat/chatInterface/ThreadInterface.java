@@ -61,5 +61,8 @@ public interface ThreadInterface {
     String registerAssistant(RegisterAssistantRequest request);
 
     String deActiveAssistant(DeactiveAssistantRequest request);
+
     String getAssistant(GetAssistantRequest request);
+
+    String blockAssistantRequest(BlockAssistantRequest request);
 }

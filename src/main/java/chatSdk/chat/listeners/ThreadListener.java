@@ -70,4 +70,8 @@ public interface ThreadListener {
     }
     default void onGetAssistant(ChatResponse<Assistant[]> GetAssistant) {
     }
+    default void onBlockAssistant(ChatResponse<Assistant[]> BlockAssistant) {
+    }
+    default void onUnblockAssistant(ChatResponse<Assistant[]> UnblockAssistant) {
+    }
     }

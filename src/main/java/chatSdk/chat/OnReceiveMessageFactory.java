@@ -162,6 +162,10 @@ public class OnReceiveMessageFactory {
                 onDeActiveAssistant(chatMessage);
             case ChatMessageType.GET_ASSISTANTS:
                 onGetAssistant(chatMessage);
+            case ChatMessageType.BLOCK_ASSISTANT:
+                onBlockAssistant(chatMessage);
+            case ChatMessageType.UNBLOCK_ASSISTANT:
+                onUnblockAssistant(chatMessage);
         }
     }
 
@@ -577,6 +581,16 @@ public class OnReceiveMessageFactory {
     private void onGetAssistant(ChatMessage chatMessage) {
         ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
         listener.onGetAssistant(response);
+    }
+
+    private void onBlockAssistant(ChatMessage chatMessage) {
+        ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
+        listener.onBlockAssistant(response);
+    }
+
+    private void onUnblockAssistant(ChatMessage chatMessage) {
+        ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
+        listener.onUnblockAssistant(response);
     }
 
 
