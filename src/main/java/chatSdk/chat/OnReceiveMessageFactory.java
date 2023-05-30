@@ -18,7 +18,6 @@ import chatSdk.dataTransferObject.user.inPut.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.util.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -474,16 +473,20 @@ public class OnReceiveMessageFactory {
 
     private ChatResponse<ResultMessage> decodeMessageResult(ChatMessage chatMessage) {
         ResultMessage resultMessage = new ResultMessage();
-        try {
-            resultMessage.setMessageId(NumberUtils.parseNumber(chatMessage.getContent(), Long.class));
-        } catch (Exception e) {
-            System.out.println("Error to convert to Long");
-        }
+        resultMessage.setMessageId(parseOrNull(chatMessage.getContent()));
         resultMessage.setConversationId(chatMessage.getSubjectId());
         resultMessage.setMessageTime(chatMessage.getTime());
         ChatResponse<ResultMessage> response = new ChatResponse<>();
         response.setResult(resultMessage);
         return response;
+    }
+
+    private Long parseOrNull(String numberString){
+        try {
+           return Long.parseLong(numberString);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void onClearHistory(ChatMessage chatMessage) {

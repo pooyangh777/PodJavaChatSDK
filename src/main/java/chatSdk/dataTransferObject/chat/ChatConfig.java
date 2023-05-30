@@ -17,9 +17,13 @@ public class ChatConfig {
     private String platformHost;
     private String fileServer;
     private Long chatId;
+    @Builder.Default
     private String typeCode = "default";
     private long ttl;
+    @Builder.Default
     private boolean isLoggable = false;
+    @Builder.Default
     private Long maxReconnectCount = 5L;
+    @Builder.Default
     private Long reconnectInterval = 5000L;
 }

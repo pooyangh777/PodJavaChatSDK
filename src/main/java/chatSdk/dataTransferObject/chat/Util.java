@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import org.springframework.beans.BeanUtils;
+//import org.springframework.beans.BeanUtils;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
 import chatSdk.dataTransferObject.user.inPut.LinkedUser;
 
@@ -18,34 +18,34 @@ import java.util.List;
 public class Util {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public static ChatResponse2<ResultAddContact> getReformatOutPutAddContact(Contacts contacts, String uniqueId) {
-        ChatResponse2<ResultAddContact> chatResponse = new ChatResponse2<>();
-        chatResponse.setUniqueId(uniqueId);
-
-        ResultAddContact resultAddContact = new ResultAddContact();
-        resultAddContact.setContentCount(1);
-        Contact contact = new Contact();
-
-        contact.setCellphoneNumber(contacts.getResult().get(0).getCellphoneNumber());
-        contact.setEmail(contacts.getResult().get(0).getEmail());
-        contact.setFirstName(contacts.getResult().get(0).getFirstName());
-        contact.setId(contacts.getResult().get(0).getId());
-        contact.setLastName(contacts.getResult().get(0).getLastName());
-        contact.setUniqueId(contacts.getResult().get(0).getUniqueId());
-
-        LinkedUser linkedUser = new LinkedUser();
-        BeanUtils.copyProperties(contacts.getResult().get(0).getLinkedUser(), linkedUser);
-        linkedUser.setCoreUserId(contacts.getResult().get(0).getLinkedUser().getId());
-        linkedUser.setId(0);
-
-        contact.setLinkedUser(linkedUser);
-
-        resultAddContact.setContact(contact);
-
-        chatResponse.setResult(resultAddContact);
-
-        return chatResponse;
-    }
+//    public static ChatResponse2<ResultAddContact> getReformatOutPutAddContact(Contacts contacts, String uniqueId) {
+//        ChatResponse2<ResultAddContact> chatResponse = new ChatResponse2<>();
+//        chatResponse.setUniqueId(uniqueId);
+//
+//        ResultAddContact resultAddContact = new ResultAddContact();
+//        resultAddContact.setContentCount(1);
+//        Contact contact = new Contact();
+//
+//        contact.setCellphoneNumber(contacts.getResult().get(0).getCellphoneNumber());
+//        contact.setEmail(contacts.getResult().get(0).getEmail());
+//        contact.setFirstName(contacts.getResult().get(0).getFirstName());
+//        contact.setId(contacts.getResult().get(0).getId());
+//        contact.setLastName(contacts.getResult().get(0).getLastName());
+//        contact.setUniqueId(contacts.getResult().get(0).getUniqueId());
+//
+//        LinkedUser linkedUser = new LinkedUser();
+//        BeanUtils.copyProperties(contacts.getResult().get(0).getLinkedUser(), linkedUser);
+//        linkedUser.setCoreUserId(contacts.getResult().get(0).getLinkedUser().getId());
+//        linkedUser.setId(0);
+//
+//        contact.setLinkedUser(linkedUser);
+//
+//        resultAddContact.setContact(contact);
+//
+//        chatResponse.setResult(resultAddContact);
+//
+//        return chatResponse;
+//    }
 
     public static boolean isNullOrEmpty(String string) {
         return string == null || string.isEmpty();
