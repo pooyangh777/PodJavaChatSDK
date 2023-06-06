@@ -36,8 +36,6 @@ public class Chat implements AsyncListener, ChatInterface {
     private long lastSentMessageTime;
     private ChatState state;
     public ChatConfig config;
-//    private Long reconnectCount = 0L;
-//    private Timer reconnectTimer;
 
     private final OnReceiveMessageFactory responseHandlers = new OnReceiveMessageFactory();
 
@@ -72,7 +70,6 @@ public class Chat implements AsyncListener, ChatInterface {
                     internalGetUserInfo();
                 } else {
                     this.state = ChatState.ChatReady;
-//                    stopAsyncReconnect();
                 }
                 pingWithDelay();
                 break;
@@ -85,7 +82,6 @@ public class Chat implements AsyncListener, ChatInterface {
             case Closed:
                 this.state = ChatState.Closed;
                 TokenExecutor.stopThread();
-//                checkAsyncIsConnected();
                 break;
         }
         listener.onChatState(this.state);
@@ -120,36 +116,6 @@ public class Chat implements AsyncListener, ChatInterface {
             ping();
         }
     }
-
-//    private void checkAsyncIsConnected() {
-//        lastSentMessageTime = new Date().getTime();
-//        reconnectTimer = new Timer();
-//        reconnectTimer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                reconnectAsync();
-//            }
-//        }, 0, config.getReconnectInterval());
-//    }
-
-//    private void reconnectAsync() {
-//        if (async.getState() == AsyncState.Closed && reconnectCount < config.getMaxReconnectCount()) {
-//            try {
-//                logger.info("Reconnecting " + reconnectCount  + " of " + config.getMaxReconnectCount());
-//                reconnectCount++;
-//                async.connect();
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//    }
-//
-//    void stopAsyncReconnect() {
-//        reconnectCount = config.getMaxReconnectCount();
-//        if (reconnectTimer != null) {
-//            reconnectTimer.cancel();
-//        }
-//    }
 
     public UserInfo getUser() {
         return user;
