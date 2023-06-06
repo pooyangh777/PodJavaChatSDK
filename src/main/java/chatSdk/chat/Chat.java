@@ -27,7 +27,7 @@ import static asyncSdk.model.AsyncMessageType.Message;
  * Created By Khojasteh on 7/29/2019
  */
 public class Chat implements AsyncListener, ChatInterface {
-    private static final Logger logger = LogManager.getLogger(Chat.class);
+    private static final Logger logger = LogManager.getContext().getLogger("SDK_LOGGER");
     private static Async async;
     @Getter
     private static Chat instance;
@@ -421,7 +421,9 @@ public class Chat implements AsyncListener, ChatInterface {
         chatMessage.setUniqueId(UUID.randomUUID().toString());
         chatMessage.setType(ChatMessageType.USER_INFO);
         chatMessage.setTypeCode(config.getTypeCode());
-        async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
+        String json = GsonFactory.gson.toJson(chatMessage);
+        async.sendMessage(json, Message, null);
+        logger.info("CHAT_SDK Send With type GetUserInfo" + ": \n" + json  + "\n");
     }
 
     private void sendAsyncMessage(BaseRequest request) {
@@ -435,7 +437,9 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but that is not send
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
-            async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
+            String json = GsonFactory.gson.toJson(chatMessage);
+            async.sendMessage(json, Message, null);
+            logger.info("CHAT_SDK Send With type " + request.getChatMessageType() + ": \n" + json  + "\n");
         }
     }
 
