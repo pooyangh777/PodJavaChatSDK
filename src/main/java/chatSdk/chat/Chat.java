@@ -3,6 +3,7 @@ package chatSdk.chat;
 import asyncSdk.Async;
 import asyncSdk.AsyncListener;
 import asyncSdk.model.AsyncMessage;
+import asyncSdk.model.Message;
 import chatSdk.chat.chatInterface.ChatInterface;
 import chatSdk.dataTransferObject.GeneralRequest;
 import chatSdk.dataTransferObject.chat.*;
@@ -387,9 +388,7 @@ public class Chat implements AsyncListener, ChatInterface {
         chatMessage.setUniqueId(UUID.randomUUID().toString());
         chatMessage.setType(ChatMessageType.USER_INFO);
         chatMessage.setTypeCode(config.getTypeCode());
-        String json = GsonFactory.gson.toJson(chatMessage);
-        async.sendMessage(json, Message, null);
-        logger.info("CHAT_SDK Send With type GetUserInfo" + ": \n" + json  + "\n");
+        sendToAsync(chatMessage);
     }
 
     private void sendAsyncMessage(BaseRequest request) {
@@ -403,10 +402,19 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but that is not send
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
-            String json = GsonFactory.gson.toJson(chatMessage);
-            async.sendMessage(json, Message, null);
-            logger.info("CHAT_SDK Send With type " + request.getChatMessageType() + ": \n" + json  + "\n");
+            sendToAsync(chatMessage);
         }
+    }
+
+    private void sendToAsync(ChatMessage chatMessage) {
+        String json = GsonFactory.gson.toJson(chatMessage);
+        asyncSdk.model.Message message = new Message();
+        message.setContent(json);
+        message.setPeerName(config.getAsyncConfig().getServerName());
+        message.setTtl(config.getTtl());
+        message.setUniqueId(chatMessage.getUniqueId());
+        async.sendMessage(message, Message);
+        logger.info("CHAT_SDK Send With type " + chatMessage.getType() + ": \n" + json  + "\n");
     }
 
     public ChatState getState() {
