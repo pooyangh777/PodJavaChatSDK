@@ -9,7 +9,7 @@ public class DeactiveAssistantRequest extends BaseRequest {
     private ArrayList<Assistant> assistants;
 
     public DeactiveAssistantRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.DEACTICVE_ASSISTANT);
+        super(builder.uniqueId, ChatMessageType.DEACTIVATE_ASSISTANT);
         this.assistants = builder.assistants;
     }
 

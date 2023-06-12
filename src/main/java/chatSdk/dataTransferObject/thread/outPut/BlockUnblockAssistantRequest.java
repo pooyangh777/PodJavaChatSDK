@@ -1,16 +1,19 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
+import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.inPut.Assistant;
 import lombok.Getter;
 
 import java.util.ArrayList;
+
 @Getter
-public class BlockAssistantRequest extends BaseRequest {
+public class BlockUnblockAssistantRequest extends BaseRequest {
     private ArrayList<Assistant> assistants;
 
-    public BlockAssistantRequest(Builder builder) {
+    public BlockUnblockAssistantRequest(Builder builder) {
         super(builder.uniqueId, builder.messageType);
         this.assistants = builder.assistants;
+
     }
 
     @Override
@@ -21,13 +24,13 @@ public class BlockAssistantRequest extends BaseRequest {
     public static class Builder {
         private ArrayList<Assistant> assistants;
         private String uniqueId;
-        private int messageType;
+        private ChatMessageType messageType;
 
-        public int getMessageType() {
+        public ChatMessageType getMessageType() {
             return messageType;
         }
 
-        public Builder setMessageType(int messageType) {
+        public Builder setMessageType(ChatMessageType messageType) {
             this.messageType = messageType;
             return this;
         }
@@ -50,8 +53,8 @@ public class BlockAssistantRequest extends BaseRequest {
             return this;
         }
 
-        public BlockAssistantRequest build() {
-            return new BlockAssistantRequest(this);
+        public BlockUnblockAssistantRequest build() {
+            return new BlockUnblockAssistantRequest(this);
         }
     }
 }

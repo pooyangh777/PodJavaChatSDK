@@ -2,15 +2,19 @@ package chatSdk.dataTransferObject.message.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
+import lombok.Getter;
 
+@Getter
 public class SendMessageRequest extends BaseRequest {
     private String message;
     private Integer messageType;
+    private long threadId;
 
     public SendMessageRequest(Builder builder) {
-        super(builder.uniqueId, builder.threadId, ChatMessageType.MESSAGE);
+        super(builder.uniqueId, ChatMessageType.MESSAGE);
         this.message = builder.message;
         this.messageType = builder.messageType;
+        this.subjectId = builder.threadId;
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ReplyMessageRequest extends BaseRequest {
 
     @Override
     public String getChatMessageContent() {
-        return gson.toJson(textMessage);
+        return textMessage;
     }
 
     public static class Builder {

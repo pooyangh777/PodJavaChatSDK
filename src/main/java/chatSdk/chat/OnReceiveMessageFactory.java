@@ -34,7 +34,7 @@ public class OnReceiveMessageFactory {
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
-        logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent());
+        logger.info("chatSdk onReceivedMessage type " + chatMessage.getType() + ": " + Objects.requireNonNull(asyncMessage).getContent());
 
         if (messageType != null) {
             switch (messageType) {
@@ -76,7 +76,7 @@ public class OnReceiveMessageFactory {
                 case REMOVE_PARTICIPANT:
                     onRemoveParticipants(chatMessage);
                     break;
-    //            case ChatMessageType.RENAME:
+                //            case ChatMessageType.RENAME:
                 case THREAD_PARTICIPANTS:
                     onGetParticipants(chatMessage);
                     break;
@@ -143,8 +143,8 @@ public class OnReceiveMessageFactory {
                 case CLEAR_HISTORY:
                     onClearHistory(chatMessage);
                     break;
-    //            case ChatMessageType.INTERACT_MESSAGE:
-    //                break;
+                //            case ChatMessageType.INTERACT_MESSAGE:
+                //                break;
             }
         }
     }

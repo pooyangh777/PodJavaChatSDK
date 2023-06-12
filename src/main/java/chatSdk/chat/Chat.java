@@ -431,7 +431,7 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
-    public String blockUnblockAssistantRequest(BlockAssistantRequest request) {
+    public String blockUnblockAssistantRequest(BlockUnblockAssistantRequest request) {
         sendAsyncMessage(request);
         return request.getUniqueId();
     }
@@ -456,7 +456,6 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but that is not send
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
-            String json = GsonFactory.gson.toJson(chatMessage);
             sendToAsync(chatMessage);
         }
     }
@@ -469,6 +468,6 @@ public class Chat implements AsyncListener, ChatInterface {
         message.setTtl(config.getTtl());
         message.setUniqueId(chatMessage.getUniqueId());
         async.sendMessage(message, Message);
-        logger.info("CHAT_SDK Send With type " + chatMessage.getType() + ": \n" + json + "\n");
+        logger.info("CHAT_SDK Send With type " + chatMessage.getType() + " : \n" + json + "\n");
     }
 }
