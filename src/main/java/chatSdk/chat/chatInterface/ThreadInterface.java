@@ -10,6 +10,7 @@ public interface ThreadInterface {
 
 
     String addTagParticipants(AddTagParticipantsRequest request);
+    String getTagParticipants(GetTagParticipantsRequest request);
 
     String deleteTag(DeleteTagRequest request);
 

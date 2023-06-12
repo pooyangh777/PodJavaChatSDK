@@ -365,10 +365,10 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
-//    public String getTagParticipants(GetTagParticipantsRequest request) {
-//        sendAsyncMessage(request);
-//        return request.getUniqueId();
-//    }
+    public String getTagParticipants(GetTagParticipantsRequest request) {
+        sendAsyncMessage(request);
+        return request.getUniqueId();
+    }
 
     public String changeThreadType(ChangeThreadTypeRequest request) {
         sendAsyncMessage(request);
