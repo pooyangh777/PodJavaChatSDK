@@ -29,122 +29,122 @@ public class OnReceiveMessageFactory {
     private static final Logger logger = LogManager.getLogger(Chat.class);
 
     public void onReceivedMessage(AsyncMessage asyncMessage) {
-        int messageType = 0;
         ChatMessage chatMessage = GsonFactory.gson.fromJson(asyncMessage.getContent(), ChatMessage.class);
+        ChatMessageType messageType = null;
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
         logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent());
-        switch (messageType) {
-            case ChatMessageType.CHANGE_TYPE:
-                break;
-            case ChatMessageType.SENT:
-                onSent(chatMessage);
-                break;
-            case ChatMessageType.DELIVERY:
-                onDelivered(chatMessage);
-                break;
-            case ChatMessageType.SEEN:
-                onSeen(chatMessage);
-                break;
-            case ChatMessageType.ERROR:
-                handleError(chatMessage);
-                break;
-            case ChatMessageType.FORWARD_MESSAGE:
-                onForwardMessage(chatMessage);
-                break;
-            case ChatMessageType.RELATION_INFO:
-            case ChatMessageType.GET_STATUS:
-            case ChatMessageType.USER_STATUS:
-            case ChatMessageType.SPAM_PV_THREAD:
-                break;
-            case ChatMessageType.GET_THREADS:
-                onGetThreads(chatMessage);
-                break;
-            case ChatMessageType.REMOVED_FROM_THREAD:
-                onRemoveFromThread(chatMessage);
-                break;
-            case ChatMessageType.LEAVE_THREAD:
-                onLeaveThread(chatMessage);
-                break;
-            case ChatMessageType.MESSAGE:
-                onNewMessage(chatMessage);
-                break;
-            case ChatMessageType.PING:
-                handleOnPing();
-                break;
-            case ChatMessageType.REMOVE_PARTICIPANT:
-                onRemoveParticipants(chatMessage);
-                break;
-            case ChatMessageType.RENAME:
-            case ChatMessageType.THREAD_PARTICIPANTS:
-                onGetParticipants(chatMessage);
-                break;
-            case ChatMessageType.UN_MUTE_THREAD:
-                onUnmuteThread(chatMessage);
-                break;
-            case ChatMessageType.MUTE_THREAD:
-                onMuteThread(chatMessage);
-                break;
-            case ChatMessageType.UNPIN_THREAD:
-                onUnpinThread(chatMessage);
-                break;
-            case ChatMessageType.PIN_THREAD:
-                onPinThread(chatMessage);
-                break;
-            case ChatMessageType.USER_INFO:
-                onUserInfo(chatMessage);
-                break;
-            case ChatMessageType.DELETE_MESSAGE:
-                onDeleteMessage(chatMessage);
-                break;
-            case ChatMessageType.EDIT_MESSAGE:
-                onEditMessage(chatMessage);
-                break;
-            case ChatMessageType.UPDATE_THREAD_INFO:
-                onUpdateThreadInfo(chatMessage);
-                break;
-            case ChatMessageType.DELIVERED_MESSAGE_LIST:
-                onDeliveredMessageList(chatMessage);
-                break;
-            case ChatMessageType.SEEN_MESSAGE_LIST:
-                onSeenMessageList(chatMessage);
-                break;
-            case ChatMessageType.BLOCK:
-                onBlock(chatMessage);
-                break;
-            case ChatMessageType.UNBLOCK:
-                onUnblock(chatMessage);
-                break;
-            case ChatMessageType.GET_BLOCKED:
-                onGetBlockList(chatMessage);
-                break;
-            case ChatMessageType.ADD_PARTICIPANT:
-                onAddParticipants(chatMessage);
-                break;
-            case ChatMessageType.GET_CONTACTS:
-                onGetContacts(chatMessage);
-                break;
-            case ChatMessageType.CREATE_THREAD:
-                onCreateThread(chatMessage);
-                break;
-            case ChatMessageType.GET_HISTORY:
-                onGetHistory(chatMessage);
-                break;
-            case ChatMessageType.LAST_SEEN_UPDATED:
-                handleLastSeenUpdated(chatMessage);
-                break;
-            case ChatMessageType.SET_ROLE_TO_USER:
-                handleSetRole(chatMessage);
-                break;
-            case ChatMessageType.REMOVE_ROLE_FROM_USER:
-                handleRemoveRole(chatMessage);
-                break;
-            case ChatMessageType.CLEAR_HISTORY:
-                onClearHistory(chatMessage);
-                break;
-            case ChatMessageType.INTERACT_MESSAGE:
-                break;
+        if (messageType != null) {
+            switch (messageType) {
+                case SENT:
+                    onSent(chatMessage);
+                    break;
+                case DELIVERY:
+                    onDelivered(chatMessage);
+                    break;
+                case SEEN:
+                    onSeen(chatMessage);
+                    break;
+                case ERROR:
+                    handleError(chatMessage);
+                    break;
+                case FORWARD_MESSAGE:
+                    onForwardMessage(chatMessage);
+                    break;
+                case RELATION_INFO:
+                case GET_STATUS:
+                case USER_STATUS:
+                case SPAM_PV_THREAD:
+                    break;
+                case GET_THREADS:
+                    onGetThreads(chatMessage);
+                    break;
+                case REMOVED_FROM_THREAD:
+                    onRemoveFromThread(chatMessage);
+                    break;
+                case LEAVE_THREAD:
+                    onLeaveThread(chatMessage);
+                    break;
+                case MESSAGE:
+                    onNewMessage(chatMessage);
+                    break;
+                case PING:
+                    handleOnPing();
+                    break;
+                case REMOVE_PARTICIPANT:
+                    onRemoveParticipants(chatMessage);
+                    break;
+    //            case ChatMessageType.RENAME:
+                case THREAD_PARTICIPANTS:
+                    onGetParticipants(chatMessage);
+                    break;
+                case UNMUTE_THREAD:
+                    onUnmuteThread(chatMessage);
+                    break;
+                case MUTE_THREAD:
+                    onMuteThread(chatMessage);
+                    break;
+                case UNPIN_THREAD:
+                    onUnpinThread(chatMessage);
+                    break;
+                case PIN_THREAD:
+                    onPinThread(chatMessage);
+                    break;
+                case USER_INFO:
+                    onUserInfo(chatMessage);
+                    break;
+                case DELETE_MESSAGE:
+                    onDeleteMessage(chatMessage);
+                    break;
+                case EDIT_MESSAGE:
+                    onEditMessage(chatMessage);
+                    break;
+                case UPDATE_THREAD_INFO:
+                    onUpdateThreadInfo(chatMessage);
+                    break;
+                case GET_MESSAGE_DELIVERY_PARTICIPANTS:
+                    onDeliveredMessageList(chatMessage);
+                    break;
+                case GET_MESSAGE_SEEN_PARTICIPANTS:
+                    onSeenMessageList(chatMessage);
+                    break;
+                case BLOCK:
+                    onBlock(chatMessage);
+                    break;
+                case UNBLOCK:
+                    onUnblock(chatMessage);
+                    break;
+                case GET_BLOCKED:
+                    onGetBlockList(chatMessage);
+                    break;
+                case ADD_PARTICIPANT:
+                    onAddParticipants(chatMessage);
+                    break;
+                case GET_CONTACTS:
+                    onGetContacts(chatMessage);
+                    break;
+                case CREATE_THREAD:
+                    onCreateThread(chatMessage);
+                    break;
+                case GET_HISTORY:
+                    onGetHistory(chatMessage);
+                    break;
+                case LAST_SEEN_UPDATED:
+                    handleLastSeenUpdated(chatMessage);
+                    break;
+                case SET_ROLE_TO_USER:
+                    handleSetRole(chatMessage);
+                    break;
+                case REMOVE_ROLE_FROM_USER:
+                    handleRemoveRole(chatMessage);
+                    break;
+                case CLEAR_HISTORY:
+                    onClearHistory(chatMessage);
+                    break;
+    //            case ChatMessageType.INTERACT_MESSAGE:
+    //                break;
+            }
         }
     }
 

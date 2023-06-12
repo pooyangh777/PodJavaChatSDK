@@ -1,7 +1,7 @@
 package chatSdk.dataTransferObject.system.outPut;
 
+import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class SetAdminRequest extends BaseRequest {
     public static class Builder {
         String uniqueId;
         Long subjectId;
-        int messageType;
+        ChatMessageType messageType;
         ArrayList<String> roles;
 
         public String getUniqueId() {
@@ -42,11 +42,11 @@ public class SetAdminRequest extends BaseRequest {
             return this;
         }
 
-        public int getMessageType() {
+        public ChatMessageType getMessageType() {
             return messageType;
         }
 
-        public Builder setMessageType(int messageType) {
+        public Builder setMessageType(ChatMessageType messageType) {
             this.messageType = messageType;
             return this;
         }

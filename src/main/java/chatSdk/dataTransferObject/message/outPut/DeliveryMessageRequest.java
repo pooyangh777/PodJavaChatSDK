@@ -2,7 +2,6 @@ package chatSdk.dataTransferObject.message.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
-import com.google.gson.Gson;
 import lombok.Getter;
 
 @Getter

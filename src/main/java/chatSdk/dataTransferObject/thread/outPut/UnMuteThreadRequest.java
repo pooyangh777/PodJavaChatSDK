@@ -1,11 +1,10 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
-import com.google.gson.Gson;
 
 public class UnMuteThreadRequest extends BaseRequest {
     public UnMuteThreadRequest(Builder builder) {
-        super(builder.uniqueId, builder.subjectId, ChatMessageType.UN_MUTE_THREAD);
+        super(builder.uniqueId, builder.subjectId, ChatMessageType.UNMUTE_THREAD);
     }
 
     public static class Builder {

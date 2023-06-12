@@ -2,7 +2,6 @@ package chatSdk.dataTransferObject.user.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
-import com.google.gson.Gson;
 
 public class UnBlockRequest extends BaseRequest {
     private final Long blockId;

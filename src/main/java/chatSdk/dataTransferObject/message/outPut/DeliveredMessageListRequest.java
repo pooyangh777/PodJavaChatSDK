@@ -11,7 +11,7 @@ public class DeliveredMessageListRequest extends BaseRequest {
     private long offset;
 
     public DeliveredMessageListRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.DELIVERED_MESSAGE_LIST);
+        super(builder.uniqueId, ChatMessageType.GET_MESSAGE_DELIVERY_PARTICIPANTS);
         this.count = builder.count;
         this.offset = builder.offset;
         this.messageId = builder.messageId;

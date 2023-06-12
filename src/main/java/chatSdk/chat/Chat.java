@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static asyncSdk.model.AsyncMessageType.Message;
+import static chatSdk.dataTransferObject.chat.ChatMessageType.USER_INFO;
 
 /**
  * Created By Khojasteh on 7/29/2019
@@ -364,10 +365,10 @@ public class Chat implements AsyncListener, ChatInterface {
         return request.getUniqueId();
     }
 
-    public String getTagParticipants(GetTagParticipantsRequest request) {
-        sendAsyncMessage(request);
-        return request.getUniqueId();
-    }
+//    public String getTagParticipants(GetTagParticipantsRequest request) {
+//        sendAsyncMessage(request);
+//        return request.getUniqueId();
+//    }
 
     public String changeThreadType(ChangeThreadTypeRequest request) {
         sendAsyncMessage(request);
@@ -419,7 +420,7 @@ public class Chat implements AsyncListener, ChatInterface {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setToken(config.getToken());
         chatMessage.setUniqueId(UUID.randomUUID().toString());
-        chatMessage.setType(ChatMessageType.USER_INFO);
+        chatMessage.setType(USER_INFO);
         chatMessage.setTypeCode(config.getTypeCode());
         async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
     }
@@ -435,7 +436,9 @@ public class Chat implements AsyncListener, ChatInterface {
             chatMessage.setTypeCode(config.getTypeCode());   // we should send this everywhere but that is not send
             chatMessage.setMessageType(1); // video , text , picture , ...    //we must do something about this for not send in everywhere
             chatMessage.setRepliedTo(request.getRepliedTo());
-            async.sendMessage(GsonFactory.gson.toJson(chatMessage), Message, null);
+            String json = GsonFactory.gson.toJson(chatMessage);
+            async.sendMessage(json, Message, null);
+            logger.info("CHAT_SDK Send With type " + request.getChatMessageType() + ": \n" + json  + "\n");
         }
     }
 }

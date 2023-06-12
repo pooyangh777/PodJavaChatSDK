@@ -1,7 +1,6 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
-import com.google.gson.Gson;
 
 public class PinThreadRequest extends BaseRequest {
     public PinThreadRequest(Builder builder) {
