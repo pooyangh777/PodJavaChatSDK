@@ -1,5 +1,6 @@
 package chatSdk.dataTransferObject;
 
+import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
 
 public class GeneralRequest extends BaseRequest {
@@ -15,7 +16,7 @@ public class GeneralRequest extends BaseRequest {
     public static class Builder {
         String uniqueId;
         Long subjectId;
-        int messageType;
+        ChatMessageType messageType;
 
         public String getUniqueId() {
             return uniqueId;
@@ -35,11 +36,11 @@ public class GeneralRequest extends BaseRequest {
             return this;
         }
 
-        public int getMessageType() {
+        public ChatMessageType getMessageType() {
             return messageType;
         }
 
-        public Builder setMessageType(int messageType) {
+        public Builder setMessageType(ChatMessageType messageType) {
             this.messageType = messageType;
             return this;
         }

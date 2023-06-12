@@ -1,6 +1,7 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.chat.GsonFactory;
+import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.message.outPut.Exclude;
 import com.google.gson.Gson;
 import lombok.Getter;
@@ -15,13 +16,13 @@ public abstract class BaseRequest {
     @Exclude
     protected Long subjectId;
     @Exclude
-    protected int chatMessageType;
+    protected ChatMessageType chatMessageType;
     @Exclude
     protected Long repliedTo;
     @Exclude
     protected Gson gson;
 
-    public BaseRequest(String uniqueId, int messageType) {
+    public BaseRequest(String uniqueId, ChatMessageType messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;
         this.chatMessageType = messageType;
         this.gson = GsonFactory.gson;
@@ -32,7 +33,7 @@ public abstract class BaseRequest {
         this.gson = GsonFactory.gson;
     }
 
-    public BaseRequest(String uniqueId, Long subjectId, int messageType) {
+    public BaseRequest(String uniqueId, Long subjectId, ChatMessageType messageType) {
         this.uniqueId = uniqueId == null ? generateUniqueId() : uniqueId;
         this.subjectId = subjectId;
         this.chatMessageType = messageType;

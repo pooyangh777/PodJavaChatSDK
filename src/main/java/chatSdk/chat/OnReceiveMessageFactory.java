@@ -5,6 +5,7 @@ import chatSdk.dataTransferObject.ChatResponse;
 import chatSdk.dataTransferObject.ChatResponse2;
 import chatSdk.dataTransferObject.GeneralResponse;
 import chatSdk.dataTransferObject.chat.ChatMessageType;
+import chatSdk.dataTransferObject.chat.ChatState;
 import chatSdk.dataTransferObject.contacts.inPut.Contact;
 import chatSdk.dataTransferObject.message.inPut.*;
 import chatSdk.dataTransferObject.message.outPut.DeliveryMessageRequest;
@@ -17,6 +18,7 @@ import chatSdk.dataTransferObject.user.inPut.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,145 +29,123 @@ public class OnReceiveMessageFactory {
     private static final Logger logger = LogManager.getLogger(Chat.class);
 
     public void onReceivedMessage(AsyncMessage asyncMessage) {
-        int messageType = 0;
         ChatMessage chatMessage = GsonFactory.gson.fromJson(asyncMessage.getContent(), ChatMessage.class);
+        ChatMessageType messageType = null;
         if (chatMessage != null) {
             messageType = chatMessage.getType();
         }
         logger.info("chatSdk onReceivedMessage" + Objects.requireNonNull(asyncMessage).getContent());
-        switch (messageType) {
-            case ChatMessageType.CHANGE_TYPE:
-                break;
-            case ChatMessageType.SENT:
-                onSent(chatMessage);
-                break;
-            case ChatMessageType.DELIVERY:
-                onDelivered(chatMessage);
-                break;
-            case ChatMessageType.SEEN:
-                onSeen(chatMessage);
-                break;
-            case ChatMessageType.ERROR:
-                handleError(chatMessage);
-                break;
-            case ChatMessageType.FORWARD_MESSAGE:
-//                handleForwardMessage(chatMessage);
-                onForwardMessage(chatMessage);
-                break;
-            case ChatMessageType.RELATION_INFO:
-            case ChatMessageType.GET_STATUS:
-            case ChatMessageType.USER_STATUS:
-            case ChatMessageType.SPAM_PV_THREAD:
-                break;
-            case ChatMessageType.GET_THREADS:
-                onGetThreads(chatMessage);
-                break;
-            case ChatMessageType.REMOVED_FROM_THREAD:
-                onRemoveFromThread(chatMessage);
-                break;
-            case ChatMessageType.LEAVE_THREAD:
-//                handleOutPutLeaveThread(chatMessage);
-                onLeaveThread(chatMessage);
-                break;
-            case ChatMessageType.MESSAGE:
-//                handleNewMessage(chatMessage);
-                onNewMessage(chatMessage);
-                break;
-            case ChatMessageType.PING:
-                handleOnPing();
-                break;
-            case ChatMessageType.REMOVE_PARTICIPANT:
-                onRemoveParticipants(chatMessage);
-                break;
-            case ChatMessageType.RENAME:
-            case ChatMessageType.THREAD_PARTICIPANTS:
-                onGetParticipants(chatMessage);
-                break;
-            case ChatMessageType.UN_MUTE_THREAD:
-                onUnmuteThread(chatMessage);
-                break;
-            case ChatMessageType.MUTE_THREAD:
-                onMuteThread(chatMessage);
-                break;
-            case ChatMessageType.UNPIN_THREAD:
-                onUnpinThread(chatMessage);
-                break;
-            case ChatMessageType.PIN_THREAD:
-                onPinThread(chatMessage);
-                break;
-            case ChatMessageType.USER_INFO:
-                onUserInfo(chatMessage);
-                break;
-            case ChatMessageType.DELETE_MESSAGE:
-                onDeleteMessage(chatMessage);
-                break;
-            case ChatMessageType.EDIT_MESSAGE:
-                onEditMessage(chatMessage);
-                break;
-            case ChatMessageType.UPDATE_THREAD_INFO:
-//                handleUpdateThreadInfo(chatMessage);
-                onUpdateThreadInfo(chatMessage);
-                break;
-            case ChatMessageType.DELIVERED_MESSAGE_LIST:
-//                handleOutPutDeliveredMessageList(chatMessage);
-                onDeliveredMessageList(chatMessage);
-                break;
-            case ChatMessageType.SEEN_MESSAGE_LIST:
-//                handleOutPutSeenMessageList(chatMessage);
-                onSeenMessageList(chatMessage);
-                break;
-            case ChatMessageType.BLOCK:
-                onBlock(chatMessage);
-                break;
-            case ChatMessageType.UNBLOCK:
-                onUnblock(chatMessage);
-                break;
-            case ChatMessageType.GET_BLOCKED:
-                onGetBlockList(chatMessage);
-                break;
-            case ChatMessageType.ADD_PARTICIPANT:
-//                handleAddParticipant(chatMessage);
-                onAddParticipants(chatMessage);
-                break;
-            case ChatMessageType.GET_CONTACTS:
-                onGetContacts(chatMessage);
-                break;
-            case ChatMessageType.CREATE_THREAD:
-                onCreateThread(chatMessage);
-                break;
-            case ChatMessageType.GET_HISTORY:
-                onGetHistory(chatMessage);
-                break;
-            case ChatMessageType.THREAD_INFO_UPDATED:
-//                handleThreadInfoUpdated(chatMessage);
-                onUpdateThreadInfo(chatMessage);
-                break;
-            case ChatMessageType.LAST_SEEN_UPDATED:
-                handleLastSeenUpdated(chatMessage);
-                break;
-            case ChatMessageType.SET_ROLE_TO_USER:
-                handleSetRole(chatMessage);
-                break;
-            case ChatMessageType.REMOVE_ROLE_FROM_USER:
-                handleRemoveRole(chatMessage);
-                break;
-            case ChatMessageType.CLEAR_HISTORY:
-//                handleClearHistory(chatMessage);
-                onClearHistory(chatMessage);
-                break;
-            case ChatMessageType.INTERACT_MESSAGE:
-//                handleInteractiveMessage(chatMessage);
-                break;
-            case ChatMessageType.REGISTER_ASSISTANT:
-                onRegisterAssistant(chatMessage);
-            case ChatMessageType.DEACTICVE_ASSISTANT:
-                onDeActiveAssistant(chatMessage);
-            case ChatMessageType.GET_ASSISTANTS:
-                onGetAssistant(chatMessage);
-            case ChatMessageType.BLOCK_ASSISTANT:
-                onBlockAssistant(chatMessage);
-            case ChatMessageType.UNBLOCK_ASSISTANT:
-                onUnblockAssistant(chatMessage);
+
+        if (messageType != null) {
+            switch (messageType) {
+                case SENT:
+                    onSent(chatMessage);
+                    break;
+                case DELIVERY:
+                    onDelivered(chatMessage);
+                    break;
+                case SEEN:
+                    onSeen(chatMessage);
+                    break;
+                case ERROR:
+                    handleError(chatMessage);
+                    break;
+                case FORWARD_MESSAGE:
+                    onForwardMessage(chatMessage);
+                    break;
+                case RELATION_INFO:
+                case GET_STATUS:
+                case USER_STATUS:
+                case SPAM_PV_THREAD:
+                    break;
+                case GET_THREADS:
+                    onGetThreads(chatMessage);
+                    break;
+                case REMOVED_FROM_THREAD:
+                    onRemoveFromThread(chatMessage);
+                    break;
+                case LEAVE_THREAD:
+                    onLeaveThread(chatMessage);
+                    break;
+                case MESSAGE:
+                    onNewMessage(chatMessage);
+                    break;
+                case PING:
+                    handleOnPing();
+                    break;
+                case REMOVE_PARTICIPANT:
+                    onRemoveParticipants(chatMessage);
+                    break;
+    //            case ChatMessageType.RENAME:
+                case THREAD_PARTICIPANTS:
+                    onGetParticipants(chatMessage);
+                    break;
+                case UNMUTE_THREAD:
+                    onUnmuteThread(chatMessage);
+                    break;
+                case MUTE_THREAD:
+                    onMuteThread(chatMessage);
+                    break;
+                case UNPIN_THREAD:
+                    onUnpinThread(chatMessage);
+                    break;
+                case PIN_THREAD:
+                    onPinThread(chatMessage);
+                    break;
+                case USER_INFO:
+                    onUserInfo(chatMessage);
+                    break;
+                case DELETE_MESSAGE:
+                    onDeleteMessage(chatMessage);
+                    break;
+                case EDIT_MESSAGE:
+                    onEditMessage(chatMessage);
+                    break;
+                case UPDATE_THREAD_INFO:
+                    onUpdateThreadInfo(chatMessage);
+                    break;
+                case GET_MESSAGE_DELIVERY_PARTICIPANTS:
+                    onDeliveredMessageList(chatMessage);
+                    break;
+                case GET_MESSAGE_SEEN_PARTICIPANTS:
+                    onSeenMessageList(chatMessage);
+                    break;
+                case BLOCK:
+                    onBlock(chatMessage);
+                    break;
+                case UNBLOCK:
+                    onUnblock(chatMessage);
+                    break;
+                case GET_BLOCKED:
+                    onGetBlockList(chatMessage);
+                    break;
+                case ADD_PARTICIPANT:
+                    onAddParticipants(chatMessage);
+                    break;
+                case GET_CONTACTS:
+                    onGetContacts(chatMessage);
+                    break;
+                case CREATE_THREAD:
+                    onCreateThread(chatMessage);
+                    break;
+                case GET_HISTORY:
+                    onGetHistory(chatMessage);
+                    break;
+                case LAST_SEEN_UPDATED:
+                    handleLastSeenUpdated(chatMessage);
+                    break;
+                case SET_ROLE_TO_USER:
+                    handleSetRole(chatMessage);
+                    break;
+                case REMOVE_ROLE_FROM_USER:
+                    handleRemoveRole(chatMessage);
+                    break;
+                case CLEAR_HISTORY:
+                    onClearHistory(chatMessage);
+                    break;
+    //            case ChatMessageType.INTERACT_MESSAGE:
+    //                break;
+            }
         }
     }
 
@@ -467,6 +447,12 @@ public class OnReceiveMessageFactory {
 
     private void onUserInfo(ChatMessage chatMessage) {
         ChatResponse<UserInfo> response = decodedResponse(UserInfo.class, chatMessage);
+        if (Chat.getInstance().getUser() == null) {
+            Chat.getInstance().setUser(response.getResult());
+            Chat.getInstance().setState(ChatState.ChatReady);
+            Chat.getInstance().stopAsyncReconnect();
+            listener.onChatState(ChatState.ChatReady);
+        }
         listener.onUserInfo(response);
     }
 
@@ -475,22 +461,30 @@ public class OnReceiveMessageFactory {
         listener.onDeleteMessage(response);
     }
 
-    //    dont work correct
     private void onSent(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onSent(response);
+        listener.onSent(decodeMessageResult(chatMessage));
     }
 
-    //    dont work correct
     private void onDelivered(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onDelivered(response);
+        listener.onDelivered(decodeMessageResult(chatMessage));
     }
 
-    //    dont work correct
     private void onSeen(ChatMessage chatMessage) {
-        ChatResponse<ResultMessage> response = decodedResponse(ResultMessage.class, chatMessage);
-        listener.onSeen(response);
+        listener.onSeen(decodeMessageResult(chatMessage));
+    }
+
+    private ChatResponse<ResultMessage> decodeMessageResult(ChatMessage chatMessage) {
+        ResultMessage resultMessage = new ResultMessage();
+        try {
+            resultMessage.setMessageId(NumberUtils.parseNumber(chatMessage.getContent(), Long.class));
+        } catch (Exception e) {
+            System.out.println("Error to convert to Long");
+        }
+        resultMessage.setConversationId(chatMessage.getSubjectId());
+        resultMessage.setMessageTime(chatMessage.getTime());
+        ChatResponse<ResultMessage> response = new ChatResponse<>();
+        response.setResult(resultMessage);
+        return response;
     }
 
     private void onClearHistory(ChatMessage chatMessage) {
@@ -525,12 +519,15 @@ public class OnReceiveMessageFactory {
 
     private void onNewMessage(ChatMessage chatMessage) {
         ChatResponse<Message> response = decodedResponse(Message.class, chatMessage);
-        long ownerId = 0;
+        Long ownerId = 0L;
         if (response.getResult() != null) {
             ownerId = response.getResult().getParticipant().getId();
         }
         listener.onNewMessage(response);
         boolean isMe = ownerId == Chat.getInstance().getUser().getId();
+        if (Chat.getInstance().getUser().getId() != null) {
+            isMe = Objects.equals(ownerId, Chat.getInstance().getUser().getId());
+        }
         if (!isMe && response.getResult() != null) {
             DeliveryMessageRequest request = new DeliveryMessageRequest.Builder()
                     .setMessageId(response.getResult().getId())
@@ -547,12 +544,14 @@ public class OnReceiveMessageFactory {
 
     private void onForwardMessage(ChatMessage chatMessage) {
         ChatResponse<Message> response = decodedResponse(Message.class, chatMessage);
-        long ownerId = 0;
+        Long ownerId = 0L;
         if (response != null) {
             ownerId = response.getResult().getParticipant().getId();
         }
-        listener.onNewMessage(response);
-        boolean isMe = ownerId == Chat.getInstance().getUser().getId();
+        boolean isMe = true;
+        if (Chat.getInstance().getUser().getId() != null) {
+            isMe = Objects.equals(ownerId, Chat.getInstance().getUser().getId());
+        }
         if (!isMe && response != null) {
             DeliveryMessageRequest request = new DeliveryMessageRequest.Builder()
                     .setMessageId(response.getResult().getId())
@@ -560,6 +559,7 @@ public class OnReceiveMessageFactory {
                     .build();
             Chat.getInstance().deliveryMessage(request);
         }
+        listener.onNewMessage(response);
     }
 
     //dont work correct
@@ -592,7 +592,6 @@ public class OnReceiveMessageFactory {
         ChatResponse<Assistant[]> response = decodedResponse(Assistant[].class, chatMessage);
         listener.onUnblockAssistant(response);
     }
-
 
     private <T> ChatResponse<T> decodedResponse(Class<T> type, ChatMessage chatMessage) {
         T decodedContent = GsonFactory.gson.fromJson(chatMessage.getContent(), type);

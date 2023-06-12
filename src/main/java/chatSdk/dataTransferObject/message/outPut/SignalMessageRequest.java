@@ -1,7 +1,6 @@
 package chatSdk.dataTransferObject.message.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
-import chatSdk.dataTransferObject.chat.SignalMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
 import lombok.Getter;
 

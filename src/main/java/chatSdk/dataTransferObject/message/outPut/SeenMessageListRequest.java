@@ -2,7 +2,6 @@ package chatSdk.dataTransferObject.message.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
 import chatSdk.dataTransferObject.thread.outPut.BaseRequest;
-import com.google.gson.Gson;
 import lombok.Getter;
 
 @Getter
@@ -12,7 +11,7 @@ public class SeenMessageListRequest extends BaseRequest {
     private long offset;
 
     public SeenMessageListRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.SEEN_MESSAGE_LIST);
+        super(builder.uniqueId, ChatMessageType.GET_MESSAGE_SEEN_PARTICIPANTS);
         this.messageId = builder.messageId;
         this.count = builder.count;
         this.offset = builder.offset;

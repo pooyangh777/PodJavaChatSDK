@@ -1,7 +1,6 @@
 package chatSdk.dataTransferObject.thread.outPut;
 
 import chatSdk.dataTransferObject.chat.ChatMessageType;
-import chatSdk.dataTransferObject.chat.ThreadType;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +10,7 @@ public class ChangeThreadTypeRequest extends BaseRequest {
     private int type;
 
     public ChangeThreadTypeRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.CHANGE_THREAD_TYPE);
+        super(builder.uniqueId, ChatMessageType.CHANGE_THREAD_PRIVACY);
         this.uniqueName = builder.uniqueName;
         this.subjectId = builder.threadId;
         this.type = builder.threadType;

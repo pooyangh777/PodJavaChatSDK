@@ -1,5 +1,7 @@
 package chatSdk.dataTransferObject.message.inPut;
 
+import asyncSdk.model.AsyncMessageType;
+import chatSdk.dataTransferObject.chat.ChatMessageType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +21,12 @@ public class ChatMessage {
     private String metadata;
     private Long repliedTo;
     private Long time;
+
+    public ChatMessageType getType() {
+        return ChatMessageType.check(type);
+    }
+    public void setType(ChatMessageType type) {
+        this.type = type.getValue();
+    }
+
 }

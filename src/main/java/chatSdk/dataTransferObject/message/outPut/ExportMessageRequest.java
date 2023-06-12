@@ -32,7 +32,7 @@ public class ExportMessageRequest extends BaseRequest {
     private final Boolean newMessages;
 
     public ExportMessageRequest(Builder builder) {
-        super(builder.uniqueId, builder.subjectId, ChatMessageType.EXPORT_CHATS);
+        super(builder.uniqueId, builder.subjectId, ChatMessageType.EXPORT_CHAT);
         this.threadId = builder.threadId;
         this.offset = builder.offset;
         this.count = builder.count;

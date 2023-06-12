@@ -11,7 +11,7 @@ public class AddTagParticipantsRequest extends BaseRequest {
     private Long[] threadIds;
 
     public AddTagParticipantsRequest(Builder builder) {
-        super(builder.uniqueId, ChatMessageType.ADD_TAG_PARTICIPANTS);
+        super(builder.uniqueId, ChatMessageType.ADD_TAG_PARTICIPANT);
         this.tagId = builder.tagId;
         this.subjectId = builder.tagId;
         this.threadIds = builder.threadId.toArray(new Long[builder.threadId.size()]);

@@ -8,7 +8,6 @@ public interface ThreadInterface {
 
     String getTagList(GeneralRequest request);
 
-    String getTagParticipants(GetTagParticipantsRequest request);
 
     String addTagParticipants(AddTagParticipantsRequest request);
 
