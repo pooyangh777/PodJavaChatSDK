@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 public class RetrofitHelperPlatformHost {
 
     private static Retrofit retrofit = null;
-
     public static synchronized Retrofit getInstance(String baseUrl) {
 
         if (retrofit == null) {

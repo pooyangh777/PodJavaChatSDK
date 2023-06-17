@@ -6,6 +6,7 @@ import chatSdk.dataTransferObject.contacts.inPut.*;
 
 public interface ContactsListener {
     default void onGetContacts(ChatResponse<Contact[]> contacts) {}
+    default void onAddContact(ChatResponse<Contact> contact){};
 
     default void onContactAdded(String content, ChatResponse2<ResultAddContact> response) {}
     default void onRemoveContact(String content, ChatResponse2<ResultRemoveContact> response) {}

@@ -321,7 +321,7 @@
 ////////        if (Util.isNullOrEmpty(firstName)) {
 ////////            firstName = "";
 ////////        }
-////////        if (Util.isNullOrEmpty(lastName)) {
+////////        if (Util.isNullOrEmpty(lastName)) {add
 ////////            lastName = "";
 ////////        }
 ////////        if (Util.isNullOrEmpty(email)) {

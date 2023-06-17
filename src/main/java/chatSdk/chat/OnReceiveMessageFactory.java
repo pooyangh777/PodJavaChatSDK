@@ -567,7 +567,12 @@ public class OnReceiveMessageFactory {
         listener.onRemovedFromThread(response);
     }
 
-    private <T> ChatResponse<T> decodedResponse(Class<T> type, ChatMessage chatMessage) {
+    private void onAddContact(ChatMessage chatMessage) {
+        ChatResponse<Contact> response = decodedResponse(Contact.class, chatMessage);
+        listener.onAddContact(response);
+    }
+
+    public  <T> ChatResponse<T> decodedResponse(Class<T> type, ChatMessage chatMessage) {
         T decodedContent = GsonFactory.gson.fromJson(chatMessage.getContent(), type);
         ChatResponse<T> response = new ChatResponse<>();
         response.setResult(decodedContent);
